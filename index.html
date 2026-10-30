@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostChat — Encrypted Stealth Messenger & Vault</title>
+    <title>GhostChat — Secure Encrypted DMs, Groups & Vault</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -32,12 +32,12 @@
     </script>
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Firebase SDKs (Compat / Modular via CDN) -->
+    <!-- Firebase SDKs (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #070A10; }
         ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 9999px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
@@ -49,43 +49,42 @@
 
     <!-- Header -->
     <header class="border-b border-slate-800/80 bg-[#0B0F17]/95 backdrop-blur-md sticky top-0 z-40">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
             <div class="flex items-center space-x-3">
-                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1px] shadow-lg shadow-emerald-500/20">
+                <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1px] shadow-lg shadow-emerald-500/20">
                     <div class="w-full h-full bg-[#0B0F17] rounded-[11px] flex items-center justify-center text-emerald-400">
                         <i data-lucide="shield-check" class="w-5 h-5"></i>
                     </div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-base sm:text-lg font-bold tracking-tight text-white font-mono">GHOST<span class="text-emerald-400">CHAT</span></h1>
+                        <h1 class="text-base font-bold tracking-tight text-white font-mono">GHOST<span class="text-emerald-400">CHAT</span></h1>
                         <span class="text-[10px] uppercase font-semibold bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-full">AES-GCM-256</span>
                     </div>
-                    <p id="t-subtitle" class="text-xs text-slate-400 hidden sm:block">End-to-End Encrypted Real-Time Chat & Vault</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-2.5">
                 <!-- Language Selector -->
-                <div class="relative flex items-center bg-slate-900/90 border border-slate-800 rounded-xl px-2.5 py-1.5 focus-within:border-emerald-500 transition">
+                <div class="relative flex items-center bg-slate-900/90 border border-slate-800 rounded-xl px-2.5 py-1.5">
                     <i data-lucide="globe" class="w-4 h-4 text-emerald-400 mr-2 shrink-0"></i>
                     <select id="langSelector" onchange="changeLanguage(this.value)" class="bg-transparent text-xs font-mono text-slate-200 outline-none cursor-pointer pr-1">
-                        <option value="en" class="bg-slate-900 text-slate-200">English (EN)</option>
-                        <option value="zh-TW" class="bg-slate-900 text-slate-200">繁體中文 (ZH-TW)</option>
-                        <option value="zh-CN" class="bg-slate-900 text-slate-200">简体中文 (ZH-CN)</option>
+                        <option value="en" class="bg-slate-900">English (EN)</option>
+                        <option value="zh-TW" class="bg-slate-900">繁體中文 (ZH-TW)</option>
+                        <option value="zh-CN" class="bg-slate-900">简体中文 (ZH-CN)</option>
                     </select>
                 </div>
 
                 <!-- Auth Profile Widget -->
-                <div id="authContainer" class="flex items-center gap-2">
-                    <button id="googleLoginBtn" onclick="loginWithGoogle()" class="flex items-center gap-2 px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs rounded-xl border border-slate-700 transition active:scale-95 shadow-sm">
+                <div id="authContainer" class="flex items-center">
+                    <button id="googleLoginBtn" onclick="loginWithGoogle()" class="flex items-center gap-2 px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs rounded-xl border border-slate-700 transition active:scale-95">
                         <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.15 21.32 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.18C.43 8.13 0 9.87 0 11.76s.43 3.63 1.18 5.15l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.15 2.68 1.18 6.61l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
                         <span id="t-loginBtn">Google Login</span>
                     </button>
                     
                     <div id="userProfile" class="hidden items-center gap-2 bg-slate-900/90 border border-slate-800 px-3 py-1 rounded-xl">
                         <img id="userAvatar" src="" alt="Avatar" class="w-6 h-6 rounded-full border border-emerald-500/50">
-                        <span id="userName" class="text-xs font-mono text-slate-200 truncate max-w-[100px]"></span>
+                        <span id="userName" class="text-xs font-mono text-slate-200 truncate max-w-[120px]"></span>
                         <button onclick="logoutUser()" title="Sign Out" class="text-slate-400 hover:text-rose-400 transition ml-1">
                             <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
                         </button>
@@ -95,18 +94,46 @@
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col">
-        <!-- Notice banner -->
-        <div class="mb-4 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-3">
-            <i data-lucide="lock" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
-            <div id="t-noticeBanner" class="text-xs text-slate-300 leading-relaxed">
-                <strong class="text-white">Zero-Knowledge Cloud Sync:</strong> Messages are encrypted with AES-256-GCM locally in your browser before saving to Firestore. To read incoming encrypted payloads, decrypt them right here or paste them into <a href="https://iaes.vercel.app" target="_blank" class="text-emerald-400 underline hover:text-emerald-300 font-mono">iaes.vercel.app</a>.
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+        
+        <!-- Sidebar: Chats & Friends -->
+        <div class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-[calc(100vh-100px)] overflow-hidden shadow-xl">
+            <!-- Sidebar Header / Actions -->
+            <div class="p-3 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                    <i data-lucide="message-square" class="w-4 h-4"></i> <span id="t-sidebarTitle">Chats & Friends</span>
+                </span>
+                <div class="flex items-center gap-1">
+                    <button onclick="openAddFriendModal()" title="Add Friend by Email" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded-lg border border-slate-700 transition">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="openCreateGroupModal()" title="Create Group Chat" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-lg border border-slate-700 transition">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat List Navigation -->
+            <div id="chatListContainer" class="flex-1 overflow-y-auto p-2 space-y-1.5">
+                <!-- Public Global Room -->
+                <div onclick="switchChat('public', 'Global Encrypted Channel', 'public')" id="chat-item-public" class="chat-tab-item p-3 rounded-xl cursor-pointer bg-slate-800/80 border border-slate-700 transition flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-950/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                        <i data-lucide="globe" class="w-4 h-4"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <h4 class="text-xs font-mono font-semibold text-white truncate">Global Channel</h4>
+                        <p class="text-[10px] text-slate-400 truncate">Public encrypted stream</p>
+                    </div>
+                </div>
+
+                <!-- DM & Group Chats will render here -->
+                <div id="dynamicChatsList" class="space-y-1.5 mt-2"></div>
             </div>
         </div>
 
-        <!-- Chat Container Card -->
-        <div class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col flex-1 shadow-2xl overflow-hidden min-h-[500px]">
+        <!-- Main Chat Area -->
+        <div class="md:col-span-3 bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-[calc(100vh-100px)] overflow-hidden shadow-2xl">
             <!-- Chat Header -->
             <div class="px-5 py-3.5 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
@@ -114,16 +141,16 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
-                    <h2 id="t-chatRoomTitle" class="text-xs sm:text-sm font-mono font-semibold text-white uppercase tracking-wider">Secure Channel #Global-Encrypted</h2>
+                    <h2 id="activeChatTitle" class="text-xs sm:text-sm font-mono font-semibold text-white uppercase tracking-wider">Global Encrypted Channel</h2>
                 </div>
                 <div class="text-[11px] font-mono text-slate-400 flex items-center gap-1">
-                    <i data-lucide="key" class="w-3.5 h-3.5 text-emerald-400"></i>
-                    <span>AES-256 Shared Key Active</span>
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span>AES-256 Secured</span>
                 </div>
             </div>
 
             <!-- Messages Stream Area -->
-            <div id="messagesContainer" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 max-h-[55vh] min-h-[350px]">
+            <div id="messagesContainer" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
                 <div class="text-center py-12 text-slate-500 font-mono text-xs">
                     <i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i>
                     <span id="t-loadingMessages">Loading encrypted chat stream...</span>
@@ -150,6 +177,76 @@
         </div>
     </main>
 
+    <!-- Add Friend Modal -->
+    <div id="addFriendModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-[#111827] border border-slate-800 max-w-md w-full rounded-2xl p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4 text-emerald-400"></i> Add Friend by Email
+                </h3>
+                <button onclick="toggleAddFriendModal(false)" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <label class="text-xs text-slate-400 font-mono block">Friend's Email Address:</label>
+                <input type="email" id="friendEmailInput" placeholder="friend@example.com" class="w-full bg-[#090D16] text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-slate-800 outline-none cipher-input">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="toggleAddFriendModal(false)" class="px-4 py-2 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
+                <button onclick="addFriendByEmail()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs rounded-xl">Search & Start DM</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Group Modal -->
+    <div id="createGroupModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-[#111827] border border-slate-800 max-w-md w-full rounded-2xl p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i> Create Group Chat
+                </h3>
+                <button onclick="toggleCreateGroupModal(false)" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs text-slate-400 font-mono block mb-1">Group Name:</label>
+                    <input type="text" id="groupNameInput" placeholder="e.g. Secret Project X" class="w-full bg-[#090D16] text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-slate-800 outline-none cipher-input">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 font-mono block mb-1">Add Friend Emails (comma-separated):</label>
+                    <input type="text" id="groupEmailsInput" placeholder="friend1@example.com, friend2@example.com" class="w-full bg-[#090D16] text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-slate-800 outline-none cipher-input">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="toggleCreateGroupModal(false)" class="px-4 py-2 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
+                <button onclick="createGroupChat()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono font-bold text-xs rounded-xl">Create Group</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passcode Modal for Decryption -->
+    <div id="passcodeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-[#111827] border border-slate-800 max-w-sm w-full rounded-2xl p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+                    <i data-lucide="key-round" class="w-4 h-4 text-emerald-400"></i> Enter Security Passcode
+                </h3>
+                <button onclick="closePasscodeModal()" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-400">To decrypt and view this message, enter the secret 6-digit passcode.</p>
+            <input type="password" id="passcodeInput" placeholder="Enter 6-digit passcode" maxlength="6" class="w-full bg-[#090D16] text-center text-emerald-400 tracking-widest text-lg font-mono rounded-xl px-4 py-3 border border-slate-800 outline-none cipher-input">
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closePasscodeModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
+                <button onclick="submitPasscode()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs rounded-xl">Verify & Decrypt</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border text-xs sm:text-sm font-mono backdrop-blur-lg">
         <span id="toastIcon"></span>
@@ -158,7 +255,6 @@
 
     <!-- Application Script -->
     <script>
-        // Your Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyC0F_bkm1uZWs0HOhgCtaXYmF9uyT6R1_o",
             authDomain: "ghostchat-f5452.firebaseapp.com",
@@ -169,12 +265,11 @@
             measurementId: "G-D8ZLYE14HL"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Pre-shared 256-bit AES Key (GhostCipher Engine)
+        // AES-256 Key Setup
         const PRE_SHARED_KEY_BYTES = new Uint8Array([
             0x4b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x53, 0x65, 
             0x63, 0x72, 0x65, 0x74, 0x4d, 0x61, 0x73, 0x74, 
@@ -186,11 +281,7 @@
         async function getCryptoKey() {
             if (cachedCryptoKey) return cachedCryptoKey;
             cachedCryptoKey = await window.crypto.subtle.importKey(
-                "raw",
-                PRE_SHARED_KEY_BYTES,
-                { name: "AES-GCM", length: 256 },
-                false,
-                ["encrypt", "decrypt"]
+                "raw", PRE_SHARED_KEY_BYTES, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
             );
             return cachedCryptoKey;
         }
@@ -225,82 +316,95 @@
             return new TextDecoder().decode(decryptedBuffer);
         }
 
-        // Multi-language dictionary
+        // SHA-256 verification for passcode "398247" -> hash: d7bbdb21aa3f6ffbe7f7e9140409a80e640243be12678129e9ae440263e6396f
+        async function verifyPasscodeHash(input) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input.trim());
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex === 'd7bbdb21aa3f6ffbe7f7e9140409a80e640243be12678129e9ae440263e6396f';
+        }
+
+        // I18N
         const I18N = {
             'en': {
-                subtitle: "End-to-End Encrypted Real-Time Chat & Vault",
+                sidebarTitle: "Chats & Friends",
                 loginBtn: "Google Login",
-                noticeBanner: "<strong>Zero-Knowledge Cloud Sync:</strong> Messages are encrypted with AES-256-GCM locally in your browser before saving to Firestore. To read incoming encrypted payloads, decrypt them right here or paste them into <a href='https://iaes.vercel.app' target='_blank' class='text-emerald-400 underline hover:text-emerald-300 font-mono'>iaes.vercel.app</a>.",
-                chatRoomTitle: "Secure Channel #Global-Encrypted",
-                loadingMessages: "Loading encrypted chat stream...",
                 sendBtn: "Encrypt & Send",
                 messagePlaceholder: "Type a secret message to encrypt and send...",
+                loadingMessages: "Loading encrypted chat stream...",
                 decryptBtn: "🔓 Decrypt Message",
                 decryptingBtn: "Decrypting...",
-                externalDecrypt: "Decrypt on iaes.vercel.app",
-                authRequired: "Please sign in with Google to send messages.",
+                authRequired: "Please sign in with Google first.",
                 toastLoginSuccess: "Successfully signed in with Google!",
                 toastLogout: "Signed out successfully.",
-                toastSent: "Message encrypted & sent to cloud!"
+                toastSent: "Message encrypted & sent!",
+                userNotFound: "User with this email does not exist.",
+                dmCreated: "Direct Message channel opened!",
+                groupCreated: "Group chat created successfully!"
             },
             'zh-TW': {
-                subtitle: "端到端加密即時通訊與檔案保險箱",
+                sidebarTitle: "聊天與好友",
                 loginBtn: "Google 登入",
-                noticeBanner: "<strong>零知識雲端同步：</strong>訊息在送出前會於瀏覽器本地進行 AES-256-GCM 加密。您可以直接在此解密，或複製密文至 <a href='https://iaes.vercel.app' target='_blank' class='text-emerald-400 underline hover:text-emerald-300 font-mono'>iaes.vercel.app</a> 進行解密。",
-                chatRoomTitle: "加密安全頻道 #Global-Encrypted",
-                loadingMessages: "正在載入加密訊息串...",
                 sendBtn: "加密並送出",
                 messagePlaceholder: "輸入要加密並發送的秘密訊息...",
+                loadingMessages: "正在載入加密訊息串...",
                 decryptBtn: "🔓 解密訊息",
                 decryptingBtn: "解密中...",
-                externalDecrypt: "至 iaes.vercel.app 解密",
-                authRequired: "請先登入 Google 帳號以發送訊息。",
+                authRequired: "請先登入 Google 帳號。",
                 toastLoginSuccess: "已成功透過 Google 登入！",
                 toastLogout: "已安全登出。",
-                toastSent: "訊息已加密並同步至雲端！"
+                toastSent: "訊息已加密並送出！",
+                userNotFound: "找不到此電子郵件對應的使用者。",
+                dmCreated: "私人聊天室已開啟！",
+                groupCreated: "群組聊天已成功建立！"
             },
             'zh-CN': {
-                subtitle: "端到端加密实时通讯与安全保险箱",
+                sidebarTitle: "聊天与好友",
                 loginBtn: "Google 登录",
-                noticeBanner: "<strong>零知识云端同步：</strong>消息在发送前会在浏览器本地进行 AES-256-GCM 加密。您可以直接在此解密，或将密文粘贴到 <a href='https://iaes.vercel.app' target='_blank' class='text-emerald-400 underline hover:text-emerald-300 font-mono'>iaes.vercel.app</a> 进行解密。",
-                chatRoomTitle: "加密安全频道 #Global-Encrypted",
-                loadingMessages: "正在加载加密消息流...",
                 sendBtn: "加密并发送",
                 messagePlaceholder: "输入要加密并发送的秘密消息...",
+                loadingMessages: "正在加载加密消息流...",
                 decryptBtn: "🔓 解密消息",
                 decryptingBtn: "解密中...",
-                externalDecrypt: "在 iaes.vercel.app 中解密",
-                authRequired: "请先登录 Google 账号以发送消息。",
+                authRequired: "请先登录 Google 账号。",
                 toastLoginSuccess: "已成功通过 Google 登录！",
                 toastLogout: "已安全登出。",
-                toastSent: "消息已加密并同步至云端！"
+                toastSent: "消息已加密并发送！",
+                userNotFound: "未找到该邮箱对应的用户。",
+                dmCreated: "私聊频道已开启！",
+                groupCreated: "群组聊天创建成功！"
             }
         };
 
         let currentLang = localStorage.getItem('ghostchat_lang') || 'en';
         function t(key) { return I18N[currentLang]?.[key] || I18N['en']?.[key] || key; }
-
         function changeLanguage(lang) {
             currentLang = lang;
             localStorage.setItem('ghostchat_lang', lang);
             applyTranslations();
         }
-
         function applyTranslations() {
-            document.getElementById('t-subtitle').textContent = t('subtitle');
+            document.getElementById('t-sidebarTitle').textContent = t('sidebarTitle');
             document.getElementById('t-loginBtn').textContent = t('loginBtn');
-            document.getElementById('t-noticeBanner').innerHTML = t('noticeBanner');
-            document.getElementById('t-chatRoomTitle').textContent = t('chatRoomTitle');
             document.getElementById('t-sendBtn').innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> ${t('sendBtn')}`;
             document.getElementById('messageInput').placeholder = t('messagePlaceholder');
-            const loadingText = document.getElementById('t-loadingMessages');
-            if (loadingText) loadingText.textContent = t('loadingMessages');
+            const l = document.getElementById('t-loadingMessages');
+            if (l) l.textContent = t('loadingMessages');
             lucide.createIcons();
         }
 
-        // Auth State Handler
+        // Active App State
         let currentUser = null;
-        auth.onAuthStateChanged((user) => {
+        let activeChatId = 'public';
+        let activeChatType = 'public';
+        let activeChatName = 'Global Encrypted Channel';
+        let unsubscribeMessages = null;
+        let pendingDecryptMsgId = null;
+        let pendingDecryptCipher = null;
+
+        auth.onAuthStateChanged(async (user) => {
             currentUser = user;
             const loginBtn = document.getElementById('googleLoginBtn');
             const userProfile = document.getElementById('userProfile');
@@ -310,6 +414,17 @@
                 userProfile.classList.add('flex');
                 document.getElementById('userAvatar').src = user.photoURL || '';
                 document.getElementById('userName').textContent = user.displayName || user.email;
+
+                // Upsert user in Firestore so others can find/add them by email
+                await db.collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    email: user.email.toLowerCase(),
+                    displayName: user.displayName || 'Anonymous',
+                    photoURL: user.photoURL || '',
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                loadUserChats();
             } else {
                 loginBtn.classList.remove('hidden');
                 userProfile.classList.add('hidden');
@@ -321,25 +436,146 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).then(() => {
                 showToast(t('toastLoginSuccess'), 'success');
-            }).catch((err) => {
-                showToast("Login error: " + err.message, 'error');
-            });
+            }).catch((err) => showToast("Login error: " + err.message, 'error'));
         }
 
         function logoutUser() {
-            auth.signOut().then(() => {
-                showToast(t('toastLogout'), 'info');
-            });
+            auth.signOut().then(() => showToast(t('toastLogout'), 'info'));
+        }
+
+        // Switch Chat Room
+        function switchChat(chatId, chatName, chatType) {
+            activeChatId = chatId;
+            activeChatName = chatName;
+            activeChatType = chatType;
+
+            document.getElementById('activeChatTitle').textContent = chatName;
+            
+            // Highlight active tab
+            document.querySelectorAll('.chat-tab-item').forEach(el => el.classList.remove('border-emerald-500', 'bg-slate-800'));
+            const activeEl = document.getElementById(`chat-item-${chatId}`);
+            if (activeEl) activeEl.classList.add('border-emerald-500', 'bg-slate-800');
+
+            initChatListener();
+        }
+
+        // Load User Chats (Public + DMs + Groups where user is participant)
+        function loadUserChats() {
+            if (!currentUser) return;
+            const container = document.getElementById('dynamicChatsList');
+
+            db.collection('chats')
+              .where('participants', 'array-contains', currentUser.uid)
+              .onSnapshot((snapshot) => {
+                  let html = '';
+                  snapshot.forEach((doc) => {
+                      const chat = doc.data();
+                      const chatId = doc.id;
+                      const isGroup = chat.type === 'group';
+                      const chatName = isGroup ? chat.name : chat.peerName || 'Direct Message';
+                      const icon = isGroup ? 'users' : 'user';
+
+                      html += `
+                          <div onclick="switchChat('${chatId}', '${escapeHtml(chatName)}', '${chat.type}')" id="chat-item-${chatId}" class="chat-tab-item p-2.5 rounded-xl cursor-pointer hover:bg-slate-800/60 border border-transparent transition flex items-center gap-3">
+                              <div class="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                                  <i data-lucide="${icon}" class="w-4 h-4 text-emerald-400"></i>
+                              </div>
+                              <div class="overflow-hidden">
+                                  <h4 class="text-xs font-mono font-semibold text-white truncate">${escapeHtml(chatName)}</h4>
+                                  <p class="text-[10px] text-slate-400 truncate uppercase">${chat.type}</p>
+                              </div>
+                          </div>
+                      `;
+                  });
+                  container.innerHTML = html;
+                  lucide.createIcons();
+              });
+        }
+
+        // Add Friend by Email
+        async function addFriendByEmail() {
+            if (!currentUser) { showToast(t('authRequired'), 'warning'); return; }
+            const emailInput = document.getElementById('friendEmailInput');
+            const targetEmail = emailInput.value.trim().toLowerCase();
+            if (!targetEmail) return;
+
+            if (targetEmail === currentUser.email.toLowerCase()) {
+                showToast("You cannot add yourself as a friend.", "warning");
+                return;
+            }
+
+            try {
+                const querySnapshot = await db.collection('users').where('email', '==', targetEmail).get();
+                if (querySnapshot.empty) {
+                    showToast(t('userNotFound'), 'error');
+                    return;
+                }
+
+                const peerDoc = querySnapshot.docs[0].data();
+                const peerUid = peerDoc.uid;
+                const peerName = peerDoc.displayName;
+
+                // Create stable DM chatId sorted by UIDs
+                const chatId = [currentUser.uid, peerUid].sort().join('_');
+
+                await db.collection('chats').doc(chatId).set({
+                    type: 'dm',
+                    participants: [currentUser.uid, peerUid],
+                    peerName: peerName,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                toggleAddFriendModal(false);
+                emailInput.value = '';
+                showToast(t('dmCreated'), 'success');
+                switchChat(chatId, peerName, 'dm');
+            } catch (err) {
+                console.error("Add friend error:", err);
+                showToast("Error adding friend: " + err.message, 'error');
+            }
+        }
+
+        // Create Group Chat
+        async function createGroupChat() {
+            if (!currentUser) { showToast(t('authRequired'), 'warning'); return; }
+            const groupName = document.getElementById('groupNameInput').value.trim();
+            const emailsStr = document.getElementById('groupEmailsInput').value.trim();
+            if (!groupName) { showToast("Please enter a group name.", "warning"); return; }
+
+            const emails = emailsStr.split(',').map(e => e.trim().toLowerCase()).filter(e => e);
+            const participants = [currentUser.uid];
+
+            try {
+                for (const email of emails) {
+                    const q = await db.collection('users').where('email', '==', email).get();
+                    if (!q.empty) {
+                        participants.push(q.docs[0].data().uid);
+                    }
+                }
+
+                const groupRef = await db.collection('chats').add({
+                    type: 'group',
+                    name: groupName,
+                    participants: participants,
+                    createdBy: currentUser.uid,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                toggleCreateGroupModal(false);
+                document.getElementById('groupNameInput').value = '';
+                document.getElementById('groupEmailsInput').value = '';
+                showToast(t('groupCreated'), 'success');
+                switchChat(groupRef.id, groupName, 'group');
+            } catch (err) {
+                console.error("Create group error:", err);
+                showToast("Error creating group: " + err.message, 'error');
+            }
         }
 
         // Send Message Handler
         async function handleSendMessage(e) {
             e.preventDefault();
-            if (!currentUser) {
-                showToast(t('authRequired'), 'warning');
-                loginWithGoogle();
-                return;
-            }
+            if (!currentUser) { showToast(t('authRequired'), 'warning'); loginWithGoogle(); return; }
 
             const input = document.getElementById('messageInput');
             const plainText = input.value.trim();
@@ -349,109 +585,155 @@
             sendBtn.disabled = true;
 
             try {
-                // Encrypt message locally using AES-256-GCM
                 const ciphertext = await encryptAES(plainText);
 
-                // Save encrypted payload to Firestore
-                await db.collection('artifacts').doc('ghostchat-f5452').collection('public').doc('data').collection('messages').add({
-                    ciphertext: ciphertext,
-                    senderName: currentUser.displayName || 'Anonymous',
-                    senderEmail: currentUser.email || '',
-                    senderPhoto: currentUser.photoURL || '',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                if (activeChatType === 'public') {
+                    await db.collection('artifacts').doc('ghostchat-f5452').collection('public').doc('data').collection('messages').add({
+                        ciphertext: ciphertext,
+                        senderName: currentUser.displayName || 'Anonymous',
+                        senderEmail: currentUser.email || '',
+                        senderPhoto: currentUser.photoURL || '',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    await db.collection('chats').doc(activeChatId).collection('messages').add({
+                        ciphertext: ciphertext,
+                        senderName: currentUser.displayName || 'Anonymous',
+                        senderEmail: currentUser.email || '',
+                        senderPhoto: currentUser.photoURL || '',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
 
                 input.value = '';
                 showToast(t('toastSent'), 'success');
             } catch (err) {
                 console.error("Send error:", err);
-                showToast("Failed to send message: " + err.message, 'error');
+                showToast("Failed to send: " + err.message, 'error');
             } finally {
                 sendBtn.disabled = false;
             }
         }
 
-        // Real-time Chat Sync listener
+        // Real-Time Chat Listener
         function initChatListener() {
             const container = document.getElementById('messagesContainer');
-            
-            db.collection('artifacts').doc('ghostchat-f5452').collection('public').doc('data').collection('messages')
-              .orderBy('timestamp', 'asc')
-              .onSnapshot((snapshot) => {
-                  if (snapshot.empty) {
-                      container.innerHTML = `<div class="text-center py-12 text-slate-500 font-mono text-xs">No encrypted messages yet. Start the conversation!</div>`;
-                      return;
-                  }
+            if (unsubscribeMessages) unsubscribeMessages();
 
-                  let html = '';
-                  snapshot.forEach((doc) => {
-                      const msg = doc.data();
-                      const msgId = doc.id;
-                      const timeStr = msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
-                      const isMe = currentUser && msg.senderEmail === currentUser.email;
+            let query;
+            if (activeChatType === 'public') {
+                query = db.collection('artifacts').doc('ghostchat-f5452').collection('public').doc('data').collection('messages').orderBy('timestamp', 'asc');
+            } else {
+                query = db.collection('chats').doc(activeChatId).collection('messages').orderBy('timestamp', 'asc');
+            }
 
-                      html += `
-                          <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} space-y-1">
-                              <div class="flex items-center gap-2 text-[11px] font-mono text-slate-400">
-                                  <img src="${msg.senderPhoto || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-4 h-4 rounded-full">
-                                  <span class="text-white font-semibold">${escapeHtml(msg.senderName)}</span>
-                                  <span>${timeStr}</span>
-                              </div>
-                              <div class="max-w-xl w-full bg-[#090D16] border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
-                                  <div>
-                                      <div class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 mb-1 flex items-center gap-1">
-                                          <i data-lucide="lock" class="w-3 h-3"></i> Encrypted Payload (Base64)
-                                      </div>
-                                      <div class="font-mono text-xs text-emerald-300 break-all bg-slate-950/80 p-2.5 rounded-xl border border-slate-900 select-all">${escapeHtml(msg.ciphertext)}</div>
-                                  </div>
-                                  
-                                  <div id="decrypted-box-${msgId}" class="hidden pt-2 border-t border-slate-800/80">
-                                      <div class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 mb-1 flex items-center gap-1">
-                                          <i data-lucide="check-circle" class="w-3 h-3"></i> Decrypted Plaintext
-                                      </div>
-                                      <div id="decrypted-text-${msgId}" class="text-sm font-sans text-slate-100 bg-emerald-950/20 p-2.5 rounded-xl border border-emerald-500/30 whitespace-pre-wrap"></div>
-                                  </div>
+            unsubscribeMessages = query.onSnapshot((snapshot) => {
+                if (snapshot.empty) {
+                    container.innerHTML = `<div class="text-center py-12 text-slate-500 font-mono text-xs">No encrypted messages here yet. Start talking!</div>`;
+                    return;
+                }
 
-                                  <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800/80">
-                                      <button onclick="decryptMessage('${msgId}', '${msg.ciphertext}')" id="btn-decrypt-${msgId}" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 font-mono text-xs rounded-lg border border-emerald-900/50 transition flex items-center gap-1.5 active:scale-95">
-                                          <i data-lucide="key-round" class="w-3.5 h-3.5"></i> ${t('decryptBtn')}
-                                      </button>
-                                      <a href="https://iaes.vercel.app" target="_blank" class="text-[11px] font-mono text-slate-400 hover:text-cyan-300 flex items-center gap-1 transition">
-                                          <i data-lucide="external-link" class="w-3 h-3"></i> ${t('externalDecrypt')}
-                                      </a>
-                                  </div>
-                              </div>
-                          </div>
-                      `;
-                  });
+                let html = '';
+                snapshot.forEach((doc) => {
+                    const msg = doc.data();
+                    const msgId = doc.id;
+                    const timeStr = msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
 
-                  container.innerHTML = html;
-                  container.scrollTop = container.scrollHeight;
-                  lucide.createIcons();
-              }, (err) => {
-                  console.error("Firestore sync error:", err);
-                  container.innerHTML = `<div class="text-center py-12 text-rose-400 font-mono text-xs">Error syncing chat: ${err.message}</div>`;
-              });
+                    html += `
+                        <div class="flex flex-col items-start space-y-1">
+                            <div class="flex items-center gap-2 text-[11px] font-mono text-slate-400">
+                                <img src="${msg.photoURL || msg.senderPhoto || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-4 h-4 rounded-full">
+                                <span class="text-white font-semibold">${escapeHtml(msg.senderName)}</span>
+                                <span>${timeStr}</span>
+                            </div>
+                            <div class="max-w-xl w-full bg-[#090D16] border border-slate-800 rounded-2xl p-3.5 shadow-md space-y-2.5">
+                                <div>
+                                    <div class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 mb-1 flex items-center gap-1">
+                                        <i data-lucide="lock" class="w-3 h-3"></i> Encrypted Payload
+                                    </div>
+                                    <div class="font-mono text-xs text-emerald-300 break-all bg-slate-950/80 p-2.5 rounded-xl border border-slate-900 select-all">${escapeHtml(msg.ciphertext)}</div>
+                                </div>
+                                
+                                <div id="decrypted-box-${msgId}" class="hidden pt-2 border-t border-slate-800/80">
+                                    <div class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 mb-1 flex items-center gap-1">
+                                        <i data-lucide="check-circle" class="w-3 h-3"></i> Decrypted Plaintext
+                                    </div>
+                                    <div id="decrypted-text-${msgId}" class="text-sm font-sans text-slate-100 bg-emerald-950/20 p-2.5 rounded-xl border border-emerald-500/30 whitespace-pre-wrap"></div>
+                                </div>
+
+                                <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                                    <button onclick="promptPasscode('${msgId}', '${msg.ciphertext}')" id="btn-decrypt-${msgId}" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 font-mono text-xs rounded-lg border border-emerald-900/50 transition flex items-center gap-1.5 active:scale-95">
+                                        <i data-lucide="key-round" class="w-3.5 h-3.5"></i> ${t('decryptBtn')}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                container.scrollTop = container.scrollHeight;
+                lucide.createIcons();
+            }, (err) => {
+                console.error("Chat sync error:", err);
+                container.innerHTML = `<div class="text-center py-12 text-rose-400 font-mono text-xs">Error syncing chat: ${err.message}</div>`;
+            });
         }
 
-        async function decryptMessage(msgId, ciphertext) {
-            const btn = document.getElementById(`btn-decrypt-${msgId}`);
-            const box = document.getElementById(`decrypted-box-${msgId}`);
-            const textEl = document.getElementById(`decrypted-text-${msgId}`);
+        // Passcode Decryption Flow
+        function promptPasscode(msgId, ciphertext) {
+            pendingDecryptMsgId = msgId;
+            pendingDecryptCipher = ciphertext;
+            document.getElementById('passcodeInput').value = '';
+            document.getElementById('passcodeModal').classList.remove('hidden');
+            document.getElementById('passcodeInput').focus();
+        }
+
+        function closePasscodeModal() {
+            document.getElementById('passcodeModal').classList.add('hidden');
+            pendingDecryptMsgId = null;
+            pendingDecryptCipher = null;
+        }
+
+        async function submitPasscode() {
+            const inputVal = document.getElementById('passcodeInput').value;
+            const isValid = await verifyPasscodeHash(inputVal);
+
+            if (!isValid) {
+                showToast("Incorrect security passcode!", "error");
+                return;
+            }
+
+            const msgId = pendingDecryptMsgId;
+            const ciphertext = pendingDecryptCipher;
+            closePasscodeModal();
 
             try {
-                btn.textContent = t('decryptingBtn');
                 const plaintext = await decryptAES(ciphertext);
+                const box = document.getElementById(`decrypted-box-${msgId}`);
+                const textEl = document.getElementById(`decrypted-text-${msgId}`);
+                const btn = document.getElementById(`btn-decrypt-${msgId}`);
+
                 textEl.textContent = plaintext;
                 box.classList.remove('hidden');
-                btn.parentElement.parentElement.parentElement.classList.add('cipher-glow');
-                btn.remove(); // Remove decrypt button once successfully decrypted in RAM
+                if (btn) btn.remove();
+                showToast("Message decrypted successfully!", "success");
             } catch (err) {
-                console.error("Decryption failed:", err);
-                showToast("Decryption failed: Corrupt payload or key mismatch", "error");
-                btn.textContent = t('decryptBtn');
+                console.error(err);
+                showToast("Decryption failed: Corrupt payload", "error");
             }
         }
+
+        // Modal toggles
+        function toggleAddFriendModal(show) {
+            document.getElementById('addFriendModal').classList.toggle('hidden', !show);
+        }
+        function openAddFriendModal() { toggleAddFriendModal(true); }
+
+        function toggleCreateGroupModal(show) {
+            document.getElementById('createGroupModal').classList.toggle('hidden', !show);
+        }
+        function openCreateGroupModal() { toggleCreateGroupModal(true); }
 
         function escapeHtml(text) {
             const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
@@ -468,16 +750,16 @@
             toastMsg.textContent = message;
 
             if (type === 'success') {
-                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-emerald-500/50 bg-[#0c1f17] text-emerald-300 text-xs font-mono backdrop-blur-lg transition-all duration-300";
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-emerald-500/50 bg-[#0c1f17] text-emerald-300 text-xs sm:text-sm font-mono backdrop-blur-lg transition-all duration-300";
                 toastIcon.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>`;
             } else if (type === 'error') {
-                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-rose-500/50 bg-[#2b0e12] text-rose-300 text-xs font-mono backdrop-blur-lg transition-all duration-300";
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-rose-500/50 bg-[#2b0e12] text-rose-300 text-xs sm:text-sm font-mono backdrop-blur-lg transition-all duration-300";
                 toastIcon.innerHTML = `<i data-lucide="alert-octagon" class="w-4 h-4 text-rose-400"></i>`;
             } else if (type === 'warning') {
-                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-amber-500/50 bg-[#281b0a] text-amber-300 text-xs font-mono backdrop-blur-lg transition-all duration-300";
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-amber-500/50 bg-[#281b0a] text-amber-300 text-xs sm:text-sm font-mono backdrop-blur-lg transition-all duration-300";
                 toastIcon.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>`;
             } else {
-                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-slate-700 bg-slate-900/90 text-slate-200 text-xs font-mono backdrop-blur-lg transition-all duration-300";
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-slate-700 bg-slate-900/90 text-slate-200 text-xs sm:text-sm font-mono backdrop-blur-lg transition-all duration-300";
                 toastIcon.innerHTML = `<i data-lucide="info" class="w-4 h-4 text-cyan-400"></i>`;
             }
 
@@ -492,6 +774,10 @@
             if (langSelect) langSelect.value = currentLang;
             applyTranslations();
             initChatListener();
+
+            document.getElementById('passcodeInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') submitPasscode();
+            });
         });
     </script>
 </body>
