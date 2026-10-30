@@ -238,8 +238,8 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <p class="text-xs text-slate-400">To decrypt and view this message, enter the secret 6-digit passcode.</p>
-            <input type="password" id="passcodeInput" placeholder="Enter 6-digit passcode" maxlength="6" class="w-full bg-[#090D16] text-center text-emerald-400 tracking-widest text-lg font-mono rounded-xl px-4 py-3 border border-slate-800 outline-none cipher-input">
+            <p class="text-xs text-slate-400">To decrypt and view this message, enter the secret passcode.</p>
+            <input type="password" id="passcodeInput" placeholder="Enter passcode" class="w-full bg-[#090D16] text-center text-emerald-400 tracking-widest text-lg font-mono rounded-xl px-4 py-3 border border-slate-800 outline-none cipher-input">
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closePasscodeModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
                 <button onclick="submitPasscode()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs rounded-xl">Verify & Decrypt</button>
@@ -316,14 +316,9 @@
             return new TextDecoder().decode(decryptedBuffer);
         }
 
-        // SHA-256 verification for passcode "398247" -> hash: d7bbdb21aa3f6ffbe7f7e9140409a80e640243be12678129e9ae440263e6396f
+        // Direct passcode verification for 398247
         async function verifyPasscodeHash(input) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(input.trim());
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex === 'd7bbdb21aa3f6ffbe7f7e9140409a80e640243be12678129e9ae440263e6396f';
+            return input.trim() === '398247';
         }
 
         // I18N
