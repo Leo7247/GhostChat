@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostChat — Secure Encrypted DMs, Groups & Vault</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GhostChat — Encrypted DMs, Groups & Vault</title>
+
+    <!-- App Favicon & Icons -->
+    <link rel="icon" type="image/png" href="https://i.imgur.com/PjKAlXP.png">
+    <link rel="shortcut icon" type="image/png" href="https://i.imgur.com/PjKAlXP.png">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/PjKAlXP.png">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -43,15 +49,22 @@
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
         .cipher-glow { box-shadow: 0 0 25px rgba(16, 185, 129, 0.12); }
         .cipher-input:focus { box-shadow: 0 0 0 2px #10B981, 0 0 15px rgba(16, 185, 129, 0.2); }
+        .app-height { height: calc(100dvh - 70px); }
+        @media (max-width: 767px) {
+            .app-height { height: calc(100dvh - 65px); }
+        }
     </style>
 </head>
-<body class="bg-[#070A10] text-slate-200 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
+<body class="bg-[#070A10] text-slate-200 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-black antialiased">
 
     <!-- Dedicated Full-Screen Banned Screen Overlay -->
     <div id="bannedOverlayScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070A10]/95 backdrop-blur-xl hidden">
-        <div class="bg-[#101726] border border-rose-600/40 max-w-md w-full rounded-2xl p-8 shadow-2xl text-center space-y-5 cipher-glow">
-            <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-950/80 border border-rose-500/40 flex items-center justify-center text-rose-500 shadow-lg shadow-rose-950/50">
-                <i data-lucide="slash" class="w-8 h-8"></i>
+        <div class="bg-[#101726] border border-rose-600/40 max-w-md w-full rounded-2xl p-6 sm:p-8 shadow-2xl text-center space-y-5 cipher-glow">
+            <div class="w-20 h-20 mx-auto rounded-2xl bg-rose-950/80 border border-rose-500/40 p-1 flex items-center justify-center shadow-lg shadow-rose-950/50 relative overflow-hidden">
+                <img src="https://i.imgur.com/PjKAlXP.png" alt="GhostChat Icon" class="w-full h-full rounded-xl object-cover opacity-80">
+                <div class="absolute inset-0 bg-rose-950/60 flex items-center justify-center text-rose-400">
+                    <i data-lucide="slash" class="w-10 h-10"></i>
+                </div>
             </div>
             <div class="space-y-1">
                 <h2 class="text-xl font-bold font-mono text-white uppercase tracking-wider">Access Denied</h2>
@@ -61,8 +74,8 @@
                 Your access to GhostChat has been restricted by an Administrator due to a security or policy violation.
             </p>
             <div class="p-3.5 bg-[#090D16] border border-slate-800 rounded-xl text-left text-xs font-mono space-y-1.5">
-                <div class="flex justify-between"><span class="text-slate-500">Banned Account:</span> <span id="bannedUserEmail" class="text-slate-200 truncate max-w-[180px]"></span></div>
-                <div class="flex justify-between"><span class="text-slate-500">Contact Admin:</span> <span class="text-emerald-400 select-all">ianyfeature@gmail.com</span></div>
+                <div class="flex justify-between items-center"><span class="text-slate-500">Banned Account:</span> <span id="bannedUserEmail" class="text-slate-200 truncate max-w-[160px] sm:max-w-[180px]"></span></div>
+                <div class="flex justify-between items-center"><span class="text-slate-500">Contact Admin:</span> <span class="text-emerald-400 select-all">ianyfeature@gmail.com</span></div>
             </div>
             <button onclick="logoutUser()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-mono font-bold text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-600/30">
                 Sign Out & Switch Account
@@ -70,51 +83,47 @@
         </div>
     </div>
 
-    <!-- Header -->
+    <!-- Header Navigation -->
     <header class="border-b border-slate-800/80 bg-[#0B0F17]/95 backdrop-blur-md sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-            <div class="flex items-center space-x-3">
-                <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1px] shadow-lg shadow-emerald-500/20">
-                    <div class="w-full h-full bg-[#0B0F17] rounded-[11px] flex items-center justify-center text-emerald-400">
-                        <i data-lucide="shield-check" class="w-5 h-5"></i>
-                    </div>
-                </div>
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3">
+            <div class="flex items-center space-x-2.5 sm:space-x-3">
+                <img src="https://i.imgur.com/PjKAlXP.png" alt="GhostChat Logo" class="h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-emerald-500/40 object-cover shadow-lg shadow-emerald-500/20">
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-base font-bold tracking-tight text-white font-mono">GHOST<span class="text-emerald-400">CHAT</span></h1>
-                        <span class="text-[10px] uppercase font-semibold bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-full">AES-GCM-256</span>
+                        <h1 class="text-sm sm:text-base font-bold tracking-tight text-white font-mono">GHOST<span class="text-emerald-400">CHAT</span></h1>
+                        <span class="text-[9px] sm:text-[10px] uppercase font-semibold bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 px-1.5 sm:px-2 py-0.5 rounded-full">AES-GCM-256</span>
                     </div>
                 </div>
             </div>
             
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-1.5 sm:gap-2.5">
                 <!-- Admin Badge & Panel Button -->
-                <button id="adminPanelBtn" onclick="openAdminModal()" class="hidden items-center gap-1.5 px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-mono text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-950/30">
-                    <i data-lucide="shield-alert" class="w-4 h-4 text-rose-400"></i>
-                    <span>Admin Panel</span>
+                <button id="adminPanelBtn" onclick="openAdminModal()" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-mono text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-950/30">
+                    <i data-lucide="shield-alert" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400"></i>
+                    <span class="hidden sm:inline">Admin Panel</span>
                 </button>
 
                 <!-- Language Selector -->
-                <div class="relative flex items-center bg-slate-900/90 border border-slate-800 rounded-xl px-2.5 py-1.5">
-                    <i data-lucide="globe" class="w-4 h-4 text-emerald-400 mr-2 shrink-0"></i>
-                    <select id="langSelector" onchange="changeLanguage(this.value)" class="bg-transparent text-xs font-mono text-slate-200 outline-none cursor-pointer pr-1">
-                        <option value="en" class="bg-slate-900">English (EN)</option>
-                        <option value="zh-TW" class="bg-slate-900">繁體中文 (ZH-TW)</option>
-                        <option value="zh-CN" class="bg-slate-900">简体中文 (ZH-CN)</option>
+                <div class="relative flex items-center bg-slate-900/90 border border-slate-800 rounded-xl px-2 py-1.5">
+                    <i data-lucide="globe" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400 mr-1.5 shrink-0"></i>
+                    <select id="langSelector" onchange="changeLanguage(this.value)" class="bg-transparent text-[11px] sm:text-xs font-mono text-slate-200 outline-none cursor-pointer pr-1">
+                        <option value="en" class="bg-slate-900">EN</option>
+                        <option value="zh-TW" class="bg-slate-900">繁中</option>
+                        <option value="zh-CN" class="bg-slate-900">简中</option>
                     </select>
                 </div>
 
                 <!-- Auth Profile Widget -->
                 <div id="authContainer" class="flex items-center">
-                    <button id="googleLoginBtn" onclick="loginWithGoogle()" class="flex items-center gap-2 px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs rounded-xl border border-slate-700 transition active:scale-95">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.15 21.32 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.18C.43 8.13 0 9.87 0 11.76s.43 3.63 1.18 5.15l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.15 2.68 1.18 6.61l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
-                        <span id="t-loginBtn">Google Login</span>
+                    <button id="googleLoginBtn" onclick="loginWithGoogle()" class="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs rounded-xl border border-slate-700 transition active:scale-95">
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.15 21.32 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.18C.43 8.13 0 9.87 0 11.76s.43 3.63 1.18 5.15l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.15 2.68 1.18 6.61l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                        <span id="t-loginBtn" class="hidden xs:inline">Google Login</span>
                     </button>
                     
-                    <div id="userProfile" class="hidden items-center gap-2 bg-slate-900/90 border border-slate-800 px-3 py-1 rounded-xl">
-                        <img id="userAvatar" src="" alt="Avatar" class="w-6 h-6 rounded-full border border-emerald-500/50">
-                        <span id="userName" class="text-xs font-mono text-slate-200 truncate max-w-[120px]"></span>
-                        <button onclick="logoutUser()" title="Sign Out" class="text-slate-400 hover:text-rose-400 transition ml-1">
+                    <div id="userProfile" class="hidden items-center gap-2 bg-slate-900/90 border border-slate-800 px-2.5 py-1 rounded-xl">
+                        <img id="userAvatar" src="" alt="Avatar" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-emerald-500/50">
+                        <span id="userName" class="text-xs font-mono text-slate-200 truncate max-w-[80px] sm:max-w-[120px]"></span>
+                        <button onclick="logoutUser()" title="Sign Out" class="text-slate-400 hover:text-rose-400 transition ml-0.5">
                             <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
                         </button>
                     </div>
@@ -123,11 +132,13 @@
         </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <!-- Sidebar: Chats & Friends -->
-        <div class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-[calc(100vh-100px)] overflow-hidden shadow-xl">
-            <div class="p-3 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between">
+    <!-- Main Workspace Framework -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 app-height overflow-hidden">
+        
+        <!-- Sidebar: Chats & Friends (Collapsible on Mobile) -->
+        <div id="sidebarSection" class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-full overflow-hidden shadow-xl md:col-span-1">
+            <!-- Sidebar Header / Actions -->
+            <div class="p-3 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between shrink-0">
                 <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
                     <i data-lucide="message-square" class="w-4 h-4"></i> <span id="t-sidebarTitle">Chats & Friends</span>
                 </span>
@@ -141,7 +152,9 @@
                 </div>
             </div>
 
+            <!-- Chat Navigation List -->
             <div id="chatListContainer" class="flex-1 overflow-y-auto p-2 space-y-1.5">
+                <!-- Public Global Room -->
                 <div onclick="switchChat('public', 'Global Encrypted Channel', 'public')" id="chat-item-public" class="chat-tab-item p-3 rounded-xl cursor-pointer bg-slate-800/80 border border-slate-700 transition flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-emerald-950/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                         <i data-lucide="globe" class="w-4 h-4"></i>
@@ -151,67 +164,75 @@
                         <p class="text-[10px] text-slate-400 truncate">Public encrypted stream</p>
                     </div>
                 </div>
+
                 <div id="dynamicChatsList" class="space-y-1.5 mt-2"></div>
             </div>
         </div>
 
-        <!-- Main Chat Area -->
-        <div class="md:col-span-3 bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-[calc(100vh-100px)] overflow-hidden shadow-2xl">
-            <div class="px-5 py-3.5 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between">
-                <div class="flex items-center gap-2.5">
-                    <span class="relative flex h-2.5 w-2.5">
+        <!-- Main Encrypted Chat Feed Area -->
+        <div id="chatSection" class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-full overflow-hidden shadow-2xl md:col-span-2 lg:col-span-3">
+            <!-- Chat Room Header -->
+            <div class="px-4 py-3 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between shrink-0 gap-2">
+                <div class="flex items-center gap-2.5 overflow-hidden">
+                    <button id="mobileBackBtn" onclick="showMobileChatList()" class="md:hidden p-1.5 text-emerald-400 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 shrink-0 flex items-center gap-1 font-mono text-xs">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                        <span>Chats</span>
+                    </button>
+                    <span class="relative flex h-2.5 w-2.5 shrink-0">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
-                    <h2 id="activeChatTitle" class="text-xs sm:text-sm font-mono font-semibold text-white uppercase tracking-wider">Global Encrypted Channel</h2>
+                    <h2 id="activeChatTitle" class="text-xs sm:text-sm font-mono font-semibold text-white uppercase tracking-wider truncate">Global Encrypted Channel</h2>
                 </div>
-                <div class="text-[11px] font-mono text-slate-400 flex items-center gap-1">
+                <div class="text-[10px] sm:text-[11px] font-mono text-slate-400 flex items-center gap-1 shrink-0">
                     <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i>
-                    <span>AES-256 Secured</span>
+                    <span class="hidden sm:inline">AES-256 Secured</span>
                 </div>
             </div>
 
-            <div id="messagesContainer" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
+            <!-- Messages Scroll Stream -->
+            <div id="messagesContainer" class="flex-1 p-3 sm:p-6 overflow-y-auto space-y-4">
                 <div class="text-center py-12 text-slate-500 font-mono text-xs">
                     <i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i>
                     <span id="t-loadingMessages">Loading encrypted chat stream...</span>
                 </div>
             </div>
 
-            <div class="p-4 border-t border-slate-800 bg-[#0B0F17]/80">
-                <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex gap-2.5">
+            <!-- Message Input Control Bar -->
+            <div class="p-2.5 sm:p-4 border-t border-slate-800 bg-[#0B0F17]/80 shrink-0">
+                <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex gap-2">
                     <input 
                         type="text" 
                         id="messageInput" 
                         placeholder="Type a secret message to encrypt and send..." 
-                        class="flex-1 bg-[#090D16] text-slate-100 placeholder-slate-500 rounded-xl px-4 py-3 text-xs sm:text-sm font-sans border border-slate-800 outline-none cipher-input transition"
+                        class="flex-1 bg-[#090D16] text-slate-100 placeholder-slate-500 rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm font-sans border border-slate-800 outline-none cipher-input transition"
                         autocomplete="off"
                         required
                     >
-                    <button type="submit" id="sendBtn" class="px-5 py-3 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-mono font-bold rounded-xl text-xs sm:text-sm transition flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 shrink-0">
+                    <button type="submit" id="sendBtn" class="px-4 sm:px-5 py-2.5 sm:py-3 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-mono font-bold rounded-xl text-xs sm:text-sm transition flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 shrink-0">
                         <i data-lucide="send" class="w-4 h-4"></i>
-                        <span id="t-sendBtn">Encrypt & Send</span>
+                        <span id="t-sendBtn" class="hidden sm:inline">Encrypt & Send</span>
                     </button>
                 </form>
             </div>
         </div>
     </main>
 
-    <!-- Admin User Management Modal -->
-    <div id="adminModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
-        <div class="bg-[#111827] border border-rose-900/60 max-w-2xl w-full rounded-2xl p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+    <!-- Admin User Directory Modal -->
+    <div id="adminModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="bg-[#111827] border border-rose-900/60 max-w-2xl w-full rounded-2xl p-4 sm:p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
-                    <i data-lucide="shield-alert" class="w-5 h-5 text-rose-500"></i> Admin User Management (<span class="text-emerald-400">ianyfeature@gmail.com</span>)
+                <h3 class="text-xs sm:text-sm font-bold text-white font-mono flex items-center gap-2 truncate">
+                    <i data-lucide="shield-alert" class="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 shrink-0"></i> Admin Management (<span class="text-emerald-400">ianyfeature@gmail.com</span>)
                 </h3>
-                <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-white">
+                <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-white p-1">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <div id="adminUsersList" class="flex-1 overflow-y-auto space-y-2 pr-1">
                 <div class="text-center py-8 text-slate-500 font-mono text-xs">
                     <i data-lucide="loader" class="w-5 h-5 animate-spin mx-auto mb-2 text-rose-400"></i>
-                    Loading registered user list...
+                    Loading user directory...
                 </div>
             </div>
             <div class="flex justify-end border-t border-slate-800 pt-3">
@@ -222,7 +243,7 @@
 
     <!-- Add Friend Modal -->
     <div id="addFriendModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
-        <div class="bg-[#111827] border border-slate-800 max-w-md w-full rounded-2xl p-6 shadow-2xl space-y-4">
+        <div class="bg-[#111827] border border-slate-800 max-w-md w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                 <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
                     <i data-lucide="user-plus" class="w-4 h-4 text-emerald-400"></i> Add Friend by Email
@@ -244,7 +265,7 @@
 
     <!-- Create Group Modal -->
     <div id="createGroupModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
-        <div class="bg-[#111827] border border-slate-800 max-w-md w-full rounded-2xl p-6 shadow-2xl space-y-4">
+        <div class="bg-[#111827] border border-slate-800 max-w-md w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                 <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
                     <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i> Create Group Chat
@@ -259,7 +280,7 @@
                     <input type="text" id="groupNameInput" placeholder="e.g. Secret Project X" class="w-full bg-[#090D16] text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-slate-800 outline-none cipher-input">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 font-mono block mb-1">Add Friend Emails (comma-separated):</label>
+                    <label class="text-xs text-slate-400 font-mono block mb-1">Add Member Emails (comma-separated):</label>
                     <input type="text" id="groupEmailsInput" placeholder="friend1@example.com, friend2@example.com" class="w-full bg-[#090D16] text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-slate-800 outline-none cipher-input">
                 </div>
             </div>
@@ -270,33 +291,13 @@
         </div>
     </div>
 
-    <!-- Passcode Modal for Decryption -->
-    <div id="passcodeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
-        <div class="bg-[#111827] border border-slate-800 max-w-sm w-full rounded-2xl p-6 shadow-2xl space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
-                    <i data-lucide="key-round" class="w-4 h-4 text-emerald-400"></i> Enter Security Passcode
-                </h3>
-                <button onclick="closePasscodeModal()" class="text-slate-400 hover:text-white">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-            <p class="text-xs text-slate-400">To decrypt and view this message, enter the secret passcode.</p>
-            <input type="password" id="passcodeInput" placeholder="Enter passcode" class="w-full bg-[#090D16] text-center text-emerald-400 tracking-widest text-lg font-mono rounded-xl px-4 py-3 border border-slate-800 outline-none cipher-input">
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closePasscodeModal()" class="px-4 py-2 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
-                <button onclick="submitPasscode()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs rounded-xl">Verify & Decrypt</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
+    <!-- Toast Notification Banner -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border text-xs sm:text-sm font-mono backdrop-blur-lg">
         <span id="toastIcon"></span>
         <span id="toastMessage">Notification</span>
     </div>
 
-    <!-- Application Script -->
+    <!-- Main Logic Script -->
     <script>
         const ADMIN_EMAIL = "ianyfeature@gmail.com";
 
@@ -314,7 +315,7 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // AES-256 Key Setup
+        // AES-256 Pre-Shared Master Key Configuration
         const PRE_SHARED_KEY_BYTES = new Uint8Array([
             0x4b, 0x72, 0x79, 0x70, 0x74, 0x6f, 0x53, 0x65, 
             0x63, 0x72, 0x65, 0x74, 0x4d, 0x61, 0x73, 0x74, 
@@ -361,11 +362,7 @@
             return new TextDecoder().decode(decryptedBuffer);
         }
 
-        async function verifyPasscodeHash(input) {
-            return input.trim() === '398247';
-        }
-
-        // I18N
+        // I18N Translations
         const I18N = {
             'en': {
                 sidebarTitle: "Chats & Friends",
@@ -374,7 +371,6 @@
                 messagePlaceholder: "Type a secret message to encrypt and send...",
                 loadingMessages: "Loading encrypted chat stream...",
                 decryptBtn: "🔓 Decrypt Message",
-                decryptingBtn: "Decrypting...",
                 authRequired: "Please sign in with Google first.",
                 toastLoginSuccess: "Successfully signed in with Google!",
                 toastLogout: "Signed out successfully.",
@@ -390,7 +386,6 @@
                 messagePlaceholder: "輸入要加密並發送的秘密訊息...",
                 loadingMessages: "正在載入加密訊息串...",
                 decryptBtn: "🔓 解密訊息",
-                decryptingBtn: "解密中...",
                 authRequired: "請先登入 Google 帳號。",
                 toastLoginSuccess: "已成功透過 Google 登入！",
                 toastLogout: "已安全登出。",
@@ -406,7 +401,6 @@
                 messagePlaceholder: "输入要加密并发送的秘密消息...",
                 loadingMessages: "正在加载加密消息流...",
                 decryptBtn: "🔓 解密消息",
-                decryptingBtn: "解密中...",
                 authRequired: "请先登录 Google 账号。",
                 toastLoginSuccess: "已成功通过 Google 登录！",
                 toastLogout: "已安全登出。",
@@ -426,26 +420,54 @@
         }
         function applyTranslations() {
             document.getElementById('t-sidebarTitle').textContent = t('sidebarTitle');
-            document.getElementById('t-loginBtn').textContent = t('loginBtn');
-            document.getElementById('t-sendBtn').innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> ${t('sendBtn')}`;
+            const loginTxt = document.getElementById('t-loginBtn');
+            if (loginTxt) loginTxt.textContent = t('loginBtn');
+            const sendTxt = document.getElementById('t-sendBtn');
+            if (sendTxt) sendTxt.textContent = t('sendBtn');
             document.getElementById('messageInput').placeholder = t('messagePlaceholder');
             const l = document.getElementById('t-loadingMessages');
             if (l) l.textContent = t('loadingMessages');
             lucide.createIcons();
         }
 
-        // Active App State
+        // Active App & Navigation State
         let currentUser = null;
         let isUserBanned = false;
         let activeChatId = 'public';
         let activeChatType = 'public';
         let activeChatName = 'Global Encrypted Channel';
+        let currentMobileView = 'list'; // 'list' or 'chat'
         let unsubscribeMessages = null;
         let unsubscribeUserChats = null;
         let unsubscribeBanStatus = null;
         let unsubscribeUsersList = null;
-        let pendingDecryptMsgId = null;
-        let pendingDecryptCipher = null;
+
+        // Dynamic Responsive View Toggle for Mobile & Small Tablets
+        function updateResponsiveViews() {
+            const isMobile = window.innerWidth < 768;
+            const sidebar = document.getElementById('sidebarSection');
+            const chatArea = document.getElementById('chatSection');
+
+            if (!sidebar || !chatArea) return;
+
+            if (isMobile) {
+                if (currentMobileView === 'list') {
+                    sidebar.classList.remove('hidden');
+                    chatArea.classList.add('hidden');
+                } else {
+                    sidebar.classList.add('hidden');
+                    chatArea.classList.remove('hidden');
+                }
+            } else {
+                sidebar.classList.remove('hidden');
+                chatArea.classList.remove('hidden');
+            }
+        }
+
+        function showMobileChatList() {
+            currentMobileView = 'list';
+            updateResponsiveViews();
+        }
 
         auth.onAuthStateChanged(async (user) => {
             currentUser = user;
@@ -559,7 +581,7 @@
                     html += `
                         <div class="p-3 bg-[#090D16] border border-slate-800 rounded-xl flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3 overflow-hidden">
-                                <img src="${u.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-8 h-8 rounded-full border border-slate-700">
+                                <img src="${u.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-8 h-8 rounded-full border border-slate-700 shrink-0">
                                 <div class="overflow-hidden">
                                     <div class="flex items-center gap-2">
                                         <span class="text-xs font-mono font-bold text-white truncate">${escapeHtml(u.displayName || 'Anonymous')}</span>
@@ -572,8 +594,8 @@
                             
                             <div>
                                 ${isAdmin ? '' : `
-                                    <button onclick="toggleUserBan('${u.uid}', ${!isBanned})" class="px-3 py-1.5 ${isBanned ? 'bg-emerald-600 hover:bg-emerald-500 text-slate-950' : 'bg-rose-600 hover:bg-rose-500 text-white'} font-mono text-xs font-bold rounded-lg transition active:scale-95">
-                                        ${isBanned ? 'Unban User' : 'Ban User'}
+                                    <button onclick="toggleUserBan('${u.uid}', ${!isBanned})" class="px-3 py-1.5 ${isBanned ? 'bg-emerald-600 hover:bg-emerald-500 text-slate-950' : 'bg-rose-600 hover:bg-rose-500 text-white'} font-mono text-xs font-bold rounded-lg transition active:scale-95 shrink-0">
+                                        ${isBanned ? 'Unban' : 'Ban'}
                                     </button>
                                 `}
                             </div>
@@ -611,6 +633,11 @@
             if (activeEl) activeEl.classList.add('border-emerald-500', 'bg-slate-800');
 
             initChatListener();
+
+            if (window.innerWidth < 768) {
+                currentMobileView = 'chat';
+                updateResponsiveViews();
+            }
         }
 
         function loadUserChats() {
@@ -645,7 +672,7 @@
                     }
 
                     const icon = isGroup ? 'users' : 'user';
-                    const adminBadge = isAdmin ? `<span class="text-[8px] font-mono bg-rose-950 text-rose-400 border border-rose-800 px-1 rounded ml-1">ADMIN INSPECT</span>` : '';
+                    const adminBadge = isAdmin ? `<span class="text-[8px] font-mono bg-rose-950 text-rose-400 border border-rose-800 px-1 rounded ml-1">ADMIN</span>` : '';
 
                     html += `
                         <div onclick="switchChat('${chatId}', '${escapeHtml(chatName)}', '${chat.type}')" id="chat-item-${chatId}" class="chat-tab-item p-2.5 rounded-xl cursor-pointer hover:bg-slate-800/60 border border-transparent transition flex items-center gap-3">
@@ -818,23 +845,23 @@
                                 <span class="text-white font-semibold">${escapeHtml(msg.senderName)}</span>
                                 <span>${timeStr}</span>
                             </div>
-                            <div class="max-w-xl w-full bg-[#090D16] border border-slate-800 rounded-2xl p-3.5 shadow-md space-y-2.5">
+                            <div class="max-w-xl w-full bg-[#090D16] border border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-md space-y-2.5">
                                 <div>
                                     <div class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 mb-1 flex items-center gap-1">
                                         <i data-lucide="lock" class="w-3 h-3"></i> Encrypted Payload
                                     </div>
-                                    <div class="font-mono text-xs text-emerald-300 break-all bg-slate-950/80 p-2.5 rounded-xl border border-slate-900 select-all">${escapeHtml(msg.ciphertext)}</div>
+                                    <div class="font-mono text-[11px] sm:text-xs text-emerald-300 break-all bg-slate-950/80 p-2.5 rounded-xl border border-slate-900 select-all">${escapeHtml(msg.ciphertext)}</div>
                                 </div>
                                 
                                 <div id="decrypted-box-${msgId}" class="hidden pt-2 border-t border-slate-800/80">
                                     <div class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 mb-1 flex items-center gap-1">
                                         <i data-lucide="check-circle" class="w-3 h-3"></i> Decrypted Plaintext
                                     </div>
-                                    <div id="decrypted-text-${msgId}" class="text-sm font-sans text-slate-100 bg-emerald-950/20 p-2.5 rounded-xl border border-emerald-500/30 whitespace-pre-wrap"></div>
+                                    <div id="decrypted-text-${msgId}" class="text-xs sm:text-sm font-sans text-slate-100 bg-emerald-950/20 p-2.5 rounded-xl border border-emerald-500/30 whitespace-pre-wrap"></div>
                                 </div>
 
                                 <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
-                                    <button onclick="promptPasscode('${msgId}', '${msg.ciphertext}')" id="btn-decrypt-${msgId}" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 font-mono text-xs rounded-lg border border-emerald-900/50 transition flex items-center gap-1.5 active:scale-95">
+                                    <button onclick="decryptMessageDirectly('${msgId}', '${msg.ciphertext}')" id="btn-decrypt-${msgId}" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 font-mono text-xs rounded-lg border border-emerald-900/50 transition flex items-center gap-1.5 active:scale-95">
                                         <i data-lucide="key-round" class="w-3.5 h-3.5"></i> ${t('decryptBtn')}
                                     </button>
                                 </div>
@@ -852,46 +879,24 @@
             });
         }
 
-        function promptPasscode(msgId, ciphertext) {
-            pendingDecryptMsgId = msgId;
-            pendingDecryptCipher = ciphertext;
-            document.getElementById('passcodeInput').value = '';
-            document.getElementById('passcodeModal').classList.remove('hidden');
-            document.getElementById('passcodeInput').focus();
-        }
-
-        function closePasscodeModal() {
-            document.getElementById('passcodeModal').classList.add('hidden');
-            pendingDecryptMsgId = null;
-            pendingDecryptCipher = null;
-        }
-
-        async function submitPasscode() {
-            const inputVal = document.getElementById('passcodeInput').value;
-            const isValid = await verifyPasscodeHash(inputVal);
-
-            if (!isValid) {
-                showToast("Incorrect security passcode!", "error");
-                return;
-            }
-
-            const msgId = pendingDecryptMsgId;
-            const ciphertext = pendingDecryptCipher;
-            closePasscodeModal();
+        // Direct One-Click AES-256 Decryption
+        async function decryptMessageDirectly(msgId, ciphertext) {
+            const btn = document.getElementById(`btn-decrypt-${msgId}`);
+            if (btn) btn.disabled = true;
 
             try {
                 const plaintext = await decryptAES(ciphertext);
                 const box = document.getElementById(`decrypted-box-${msgId}`);
                 const textEl = document.getElementById(`decrypted-text-${msgId}`);
-                const btn = document.getElementById(`btn-decrypt-${msgId}`);
 
                 textEl.textContent = plaintext;
                 box.classList.remove('hidden');
                 if (btn) btn.remove();
                 showToast("Message decrypted successfully!", "success");
             } catch (err) {
-                console.error(err);
+                console.error("Decryption error:", err);
                 showToast("Decryption failed: Corrupt payload", "error");
+                if (btn) btn.disabled = false;
             }
         }
 
@@ -935,15 +940,14 @@
             }, 3400);
         }
 
+        window.addEventListener('resize', updateResponsiveViews);
+
         window.addEventListener('DOMContentLoaded', () => {
             const langSelect = document.getElementById('langSelector');
             if (langSelect) langSelect.value = currentLang;
             applyTranslations();
             initChatListener();
-
-            document.getElementById('passcodeInput').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') submitPasscode();
-            });
+            updateResponsiveViews();
         });
     </script>
 </body>
