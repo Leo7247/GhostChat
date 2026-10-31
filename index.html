@@ -65,6 +65,12 @@
             </div>
             
             <div class="flex items-center gap-2.5">
+                <!-- Admin Badge & Panel Button -->
+                <button id="adminPanelBtn" onclick="openAdminModal()" class="hidden items-center gap-1.5 px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-mono text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-950/30">
+                    <i data-lucide="shield-alert" class="w-4 h-4 text-rose-400"></i>
+                    <span>Admin Panel</span>
+                </button>
+
                 <!-- Language Selector -->
                 <div class="relative flex items-center bg-slate-900/90 border border-slate-800 rounded-xl px-2.5 py-1.5">
                     <i data-lucide="globe" class="w-4 h-4 text-emerald-400 mr-2 shrink-0"></i>
@@ -93,6 +99,14 @@
             </div>
         </div>
     </header>
+
+    <!-- Banned User Warning Banner (Hidden by default) -->
+    <div id="bannedBanner" class="hidden bg-rose-950/90 border-b border-rose-800 p-3 text-center text-rose-200 font-mono text-xs z-30">
+        <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
+            <i data-lucide="slash" class="w-4 h-4 text-rose-400"></i>
+            <span><strong>ACCOUNT BANNED:</strong> Your account has been restricted by an Administrator. Read-only mode enabled.</span>
+        </div>
+    </div>
 
     <!-- Main Workspace -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -177,6 +191,32 @@
         </div>
     </main>
 
+    <!-- Admin User Management Modal -->
+    <div id="adminModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="bg-[#111827] border border-rose-900/60 max-w-2xl w-full rounded-2xl p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+                    <i data-lucide="shield-alert" class="w-5 h-5 text-rose-500"></i> Admin User Management (<span class="text-emerald-400">ianyfeature@gmail.com</span>)
+                </h3>
+                <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- User Directory List -->
+            <div id="adminUsersList" class="flex-1 overflow-y-auto space-y-2 pr-1">
+                <div class="text-center py-8 text-slate-500 font-mono text-xs">
+                    <i data-lucide="loader" class="w-5 h-5 animate-spin mx-auto mb-2 text-rose-400"></i>
+                    Loading registered user list...
+                </div>
+            </div>
+
+            <div class="flex justify-end border-t border-slate-800 pt-3">
+                <button onclick="toggleAdminModal(false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono text-xs rounded-xl">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add Friend Modal -->
     <div id="addFriendModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
         <div class="bg-[#111827] border border-slate-800 max-w-md w-full rounded-2xl p-6 shadow-2xl space-y-4">
@@ -255,6 +295,8 @@
 
     <!-- Application Script -->
     <script>
+        const ADMIN_EMAIL = "ianyfeature@gmail.com";
+
         const firebaseConfig = {
             apiKey: "AIzaSyC0F_bkm1uZWs0HOhgCtaXYmF9uyT6R1_o",
             authDomain: "ghostchat-f5452.firebaseapp.com",
@@ -316,7 +358,6 @@
             return new TextDecoder().decode(decryptedBuffer);
         }
 
-        // Direct passcode verification for 398247
         async function verifyPasscodeHash(input) {
             return input.trim() === '398247';
         }
@@ -392,10 +433,13 @@
 
         // Active App State
         let currentUser = null;
+        let isUserBanned = false;
         let activeChatId = 'public';
         let activeChatType = 'public';
         let activeChatName = 'Global Encrypted Channel';
         let unsubscribeMessages = null;
+        let unsubscribeBanStatus = null;
+        let unsubscribeUsersList = null;
         let pendingDecryptMsgId = null;
         let pendingDecryptCipher = null;
 
@@ -403,6 +447,8 @@
             currentUser = user;
             const loginBtn = document.getElementById('googleLoginBtn');
             const userProfile = document.getElementById('userProfile');
+            const adminBtn = document.getElementById('adminPanelBtn');
+
             if (user) {
                 loginBtn.classList.add('hidden');
                 userProfile.classList.remove('hidden');
@@ -410,7 +456,16 @@
                 document.getElementById('userAvatar').src = user.photoURL || '';
                 document.getElementById('userName').textContent = user.displayName || user.email;
 
-                // Upsert user in Firestore so others can find/add them by email
+                // Show Admin button if ianyfeature@gmail.com
+                if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    adminBtn.classList.remove('hidden');
+                    adminBtn.classList.add('flex');
+                } else {
+                    adminBtn.classList.add('hidden');
+                    adminBtn.classList.remove('flex');
+                }
+
+                // Upsert user profile
                 await db.collection('users').doc(user.uid).set({
                     uid: user.uid,
                     email: user.email.toLowerCase(),
@@ -419,13 +474,50 @@
                     lastSeen: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
 
+                // Listen to Ban status
+                listenToUserBanStatus(user.uid);
                 loadUserChats();
             } else {
                 loginBtn.classList.remove('hidden');
                 userProfile.classList.add('hidden');
                 userProfile.classList.remove('flex');
+                adminBtn.classList.add('hidden');
+                adminBtn.classList.remove('flex');
+                if (unsubscribeBanStatus) unsubscribeBanStatus();
+                setBannedState(false);
             }
         });
+
+        // Listen for Real-Time Ban updates on active user
+        function listenToUserBanStatus(uid) {
+            if (unsubscribeBanStatus) unsubscribeBanStatus();
+            unsubscribeBanStatus = db.collection('users').doc(uid).onSnapshot((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    const banned = data.isBanned === true;
+                    setBannedState(banned);
+                }
+            });
+        }
+
+        function setBannedState(banned) {
+            isUserBanned = banned;
+            const banner = document.getElementById('bannedBanner');
+            const msgInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+
+            if (banned) {
+                banner.classList.remove('hidden');
+                msgInput.disabled = true;
+                msgInput.placeholder = "ACCOUNT BANNED — Messaging disabled";
+                sendBtn.disabled = true;
+            } else {
+                banner.classList.add('hidden');
+                msgInput.disabled = false;
+                msgInput.placeholder = t('messagePlaceholder');
+                sendBtn.disabled = false;
+            }
+        }
 
         function loginWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
@@ -438,6 +530,74 @@
             auth.signOut().then(() => showToast(t('toastLogout'), 'info'));
         }
 
+        // Admin User Management Panel
+        function toggleAdminModal(show) {
+            const modal = document.getElementById('adminModal');
+            modal.classList.toggle('hidden', !show);
+            if (show) listenToAllUsers();
+            else if (unsubscribeUsersList) unsubscribeUsersList();
+        }
+        function openAdminModal() { toggleAdminModal(true); }
+
+        function listenToAllUsers() {
+            const container = document.getElementById('adminUsersList');
+            if (unsubscribeUsersList) unsubscribeUsersList();
+
+            unsubscribeUsersList = db.collection('users').onSnapshot((snapshot) => {
+                if (snapshot.empty) {
+                    container.innerHTML = `<div class="text-center py-8 text-slate-500 font-mono text-xs">No registered users found.</div>`;
+                    return;
+                }
+
+                let html = '';
+                snapshot.forEach((doc) => {
+                    const u = doc.data();
+                    const isBanned = u.isBanned === true;
+                    const isAdmin = u.email === ADMIN_EMAIL;
+
+                    html += `
+                        <div class="p-3 bg-[#090D16] border border-slate-800 rounded-xl flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <img src="${u.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-8 h-8 rounded-full border border-slate-700">
+                                <div class="overflow-hidden">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-mono font-bold text-white truncate">${escapeHtml(u.displayName || 'Anonymous')}</span>
+                                        ${isAdmin ? `<span class="text-[9px] font-mono px-1.5 py-0.5 bg-rose-950 text-rose-400 border border-rose-800 rounded">ADMIN</span>` : ''}
+                                        ${isBanned ? `<span class="text-[9px] font-mono px-1.5 py-0.5 bg-rose-900/60 text-rose-300 border border-rose-700 rounded">BANNED</span>` : `<span class="text-[9px] font-mono px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded">ACTIVE</span>`}
+                                    </div>
+                                    <p class="text-[10px] font-mono text-slate-400 truncate">${escapeHtml(u.email || '')}</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                ${isAdmin ? '' : `
+                                    <button onclick="toggleUserBan('${u.uid}', ${!isBanned})" class="px-3 py-1.5 ${isBanned ? 'bg-emerald-600 hover:bg-emerald-500 text-slate-950' : 'bg-rose-600 hover:bg-rose-500 text-white'} font-mono text-xs font-bold rounded-lg transition active:scale-95">
+                                        ${isBanned ? 'Unban User' : 'Ban User'}
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                lucide.createIcons();
+            });
+        }
+
+        async function toggleUserBan(targetUid, banStatus) {
+            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
+            try {
+                await db.collection('users').doc(targetUid).update({
+                    isBanned: banStatus,
+                    bannedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showToast(banStatus ? "User banned successfully!" : "User unbanned successfully!", banStatus ? "warning" : "success");
+            } catch (err) {
+                showToast("Failed to update user ban status: " + err.message, "error");
+            }
+        }
+
         // Switch Chat Room
         function switchChat(chatId, chatName, chatType) {
             activeChatId = chatId;
@@ -446,7 +606,6 @@
 
             document.getElementById('activeChatTitle').textContent = chatName;
             
-            // Highlight active tab
             document.querySelectorAll('.chat-tab-item').forEach(el => el.classList.remove('border-emerald-500', 'bg-slate-800'));
             const activeEl = document.getElementById(`chat-item-${chatId}`);
             if (activeEl) activeEl.classList.add('border-emerald-500', 'bg-slate-800');
@@ -454,7 +613,7 @@
             initChatListener();
         }
 
-        // Load User Chats (Public + DMs + Groups where user is participant)
+        // Load User Chats
         function loadUserChats() {
             if (!currentUser) return;
             const container = document.getElementById('dynamicChatsList');
@@ -490,6 +649,7 @@
         // Add Friend by Email
         async function addFriendByEmail() {
             if (!currentUser) { showToast(t('authRequired'), 'warning'); return; }
+            if (isUserBanned) { showToast("Banned accounts cannot add friends.", "error"); return; }
             const emailInput = document.getElementById('friendEmailInput');
             const targetEmail = emailInput.value.trim().toLowerCase();
             if (!targetEmail) return;
@@ -510,7 +670,6 @@
                 const peerUid = peerDoc.uid;
                 const peerName = peerDoc.displayName;
 
-                // Create stable DM chatId sorted by UIDs
                 const chatId = [currentUser.uid, peerUid].sort().join('_');
 
                 await db.collection('chats').doc(chatId).set({
@@ -533,6 +692,7 @@
         // Create Group Chat
         async function createGroupChat() {
             if (!currentUser) { showToast(t('authRequired'), 'warning'); return; }
+            if (isUserBanned) { showToast("Banned accounts cannot create group chats.", "error"); return; }
             const groupName = document.getElementById('groupNameInput').value.trim();
             const emailsStr = document.getElementById('groupEmailsInput').value.trim();
             if (!groupName) { showToast("Please enter a group name.", "warning"); return; }
@@ -571,6 +731,7 @@
         async function handleSendMessage(e) {
             e.preventDefault();
             if (!currentUser) { showToast(t('authRequired'), 'warning'); loginWithGoogle(); return; }
+            if (isUserBanned) { showToast("Your account is banned from sending messages.", "error"); return; }
 
             const input = document.getElementById('messageInput');
             const plainText = input.value.trim();
@@ -606,7 +767,7 @@
                 console.error("Send error:", err);
                 showToast("Failed to send: " + err.message, 'error');
             } finally {
-                sendBtn.disabled = false;
+                sendBtn.disabled = isUserBanned;
             }
         }
 
@@ -675,7 +836,6 @@
             });
         }
 
-        // Passcode Decryption Flow
         function promptPasscode(msgId, ciphertext) {
             pendingDecryptMsgId = msgId;
             pendingDecryptCipher = ciphertext;
@@ -719,15 +879,10 @@
             }
         }
 
-        // Modal toggles
-        function toggleAddFriendModal(show) {
-            document.getElementById('addFriendModal').classList.toggle('hidden', !show);
-        }
+        function toggleAddFriendModal(show) { document.getElementById('addFriendModal').classList.toggle('hidden', !show); }
         function openAddFriendModal() { toggleAddFriendModal(true); }
 
-        function toggleCreateGroupModal(show) {
-            document.getElementById('createGroupModal').classList.toggle('hidden', !show);
-        }
+        function toggleCreateGroupModal(show) { document.getElementById('createGroupModal').classList.toggle('hidden', !show); }
         function openCreateGroupModal() { toggleCreateGroupModal(true); }
 
         function escapeHtml(text) {
