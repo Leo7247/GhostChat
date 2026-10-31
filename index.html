@@ -47,6 +47,29 @@
 </head>
 <body class="bg-[#070A10] text-slate-200 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
 
+    <!-- Dedicated Full-Screen Banned Screen Overlay -->
+    <div id="bannedOverlayScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070A10]/95 backdrop-blur-xl hidden">
+        <div class="bg-[#101726] border border-rose-600/40 max-w-md w-full rounded-2xl p-8 shadow-2xl text-center space-y-5 cipher-glow">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-950/80 border border-rose-500/40 flex items-center justify-center text-rose-500 shadow-lg shadow-rose-950/50">
+                <i data-lucide="slash" class="w-8 h-8"></i>
+            </div>
+            <div class="space-y-1">
+                <h2 class="text-xl font-bold font-mono text-white uppercase tracking-wider">Access Denied</h2>
+                <p class="text-xs font-mono text-rose-400 font-bold uppercase tracking-wide">Account Banned</p>
+            </div>
+            <p class="text-xs text-slate-400 font-mono leading-relaxed">
+                Your access to GhostChat has been restricted by an Administrator due to a security or policy violation.
+            </p>
+            <div class="p-3.5 bg-[#090D16] border border-slate-800 rounded-xl text-left text-xs font-mono space-y-1.5">
+                <div class="flex justify-between"><span class="text-slate-500">Banned Account:</span> <span id="bannedUserEmail" class="text-slate-200 truncate max-w-[180px]"></span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Contact Admin:</span> <span class="text-emerald-400 select-all">ianyfeature@gmail.com</span></div>
+            </div>
+            <button onclick="logoutUser()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-mono font-bold text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-600/30">
+                Sign Out & Switch Account
+            </button>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="border-b border-slate-800/80 bg-[#0B0F17]/95 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
@@ -100,20 +123,10 @@
         </div>
     </header>
 
-    <!-- Banned User Warning Banner (Hidden by default) -->
-    <div id="bannedBanner" class="hidden bg-rose-950/90 border-b border-rose-800 p-3 text-center text-rose-200 font-mono text-xs z-30">
-        <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
-            <i data-lucide="slash" class="w-4 h-4 text-rose-400"></i>
-            <span><strong>ACCOUNT BANNED:</strong> Your account has been restricted by an Administrator. Read-only mode enabled.</span>
-        </div>
-    </div>
-
     <!-- Main Workspace -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-        
         <!-- Sidebar: Chats & Friends -->
         <div class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-[calc(100vh-100px)] overflow-hidden shadow-xl">
-            <!-- Sidebar Header / Actions -->
             <div class="p-3 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between">
                 <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
                     <i data-lucide="message-square" class="w-4 h-4"></i> <span id="t-sidebarTitle">Chats & Friends</span>
@@ -128,9 +141,7 @@
                 </div>
             </div>
 
-            <!-- Chat List Navigation -->
             <div id="chatListContainer" class="flex-1 overflow-y-auto p-2 space-y-1.5">
-                <!-- Public Global Room -->
                 <div onclick="switchChat('public', 'Global Encrypted Channel', 'public')" id="chat-item-public" class="chat-tab-item p-3 rounded-xl cursor-pointer bg-slate-800/80 border border-slate-700 transition flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-emerald-950/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                         <i data-lucide="globe" class="w-4 h-4"></i>
@@ -140,15 +151,12 @@
                         <p class="text-[10px] text-slate-400 truncate">Public encrypted stream</p>
                     </div>
                 </div>
-
-                <!-- DM & Group Chats will render here -->
                 <div id="dynamicChatsList" class="space-y-1.5 mt-2"></div>
             </div>
         </div>
 
         <!-- Main Chat Area -->
         <div class="md:col-span-3 bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-[calc(100vh-100px)] overflow-hidden shadow-2xl">
-            <!-- Chat Header -->
             <div class="px-5 py-3.5 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <span class="relative flex h-2.5 w-2.5">
@@ -163,7 +171,6 @@
                 </div>
             </div>
 
-            <!-- Messages Stream Area -->
             <div id="messagesContainer" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
                 <div class="text-center py-12 text-slate-500 font-mono text-xs">
                     <i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i>
@@ -171,7 +178,6 @@
                 </div>
             </div>
 
-            <!-- Message Input Bar -->
             <div class="p-4 border-t border-slate-800 bg-[#0B0F17]/80">
                 <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex gap-2.5">
                     <input 
@@ -202,15 +208,12 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-
-            <!-- User Directory List -->
             <div id="adminUsersList" class="flex-1 overflow-y-auto space-y-2 pr-1">
                 <div class="text-center py-8 text-slate-500 font-mono text-xs">
                     <i data-lucide="loader" class="w-5 h-5 animate-spin mx-auto mb-2 text-rose-400"></i>
                     Loading registered user list...
                 </div>
             </div>
-
             <div class="flex justify-end border-t border-slate-800 pt-3">
                 <button onclick="toggleAdminModal(false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono text-xs rounded-xl">Close</button>
             </div>
@@ -456,7 +459,6 @@
                 document.getElementById('userAvatar').src = user.photoURL || '';
                 document.getElementById('userName').textContent = user.displayName || user.email;
 
-                // Show Admin button if ianyfeature@gmail.com
                 if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     adminBtn.classList.remove('hidden');
                     adminBtn.classList.add('flex');
@@ -465,7 +467,6 @@
                     adminBtn.classList.remove('flex');
                 }
 
-                // Upsert user profile
                 await db.collection('users').doc(user.uid).set({
                     uid: user.uid,
                     email: user.email.toLowerCase(),
@@ -474,7 +475,6 @@
                     lastSeen: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
 
-                // Listen to Ban status
                 listenToUserBanStatus(user.uid);
                 loadUserChats();
             } else {
@@ -488,7 +488,6 @@
             }
         });
 
-        // Listen for Real-Time Ban updates on active user
         function listenToUserBanStatus(uid) {
             if (unsubscribeBanStatus) unsubscribeBanStatus();
             unsubscribeBanStatus = db.collection('users').doc(uid).onSnapshot((doc) => {
@@ -502,21 +501,22 @@
 
         function setBannedState(banned) {
             isUserBanned = banned;
-            const banner = document.getElementById('bannedBanner');
+            const overlay = document.getElementById('bannedOverlayScreen');
+            const bannedEmailSpan = document.getElementById('bannedUserEmail');
             const msgInput = document.getElementById('messageInput');
             const sendBtn = document.getElementById('sendBtn');
 
             if (banned) {
-                banner.classList.remove('hidden');
+                if (currentUser) bannedEmailSpan.textContent = currentUser.email;
+                overlay.classList.remove('hidden');
                 msgInput.disabled = true;
-                msgInput.placeholder = "ACCOUNT BANNED — Messaging disabled";
                 sendBtn.disabled = true;
             } else {
-                banner.classList.add('hidden');
+                overlay.classList.add('hidden');
                 msgInput.disabled = false;
-                msgInput.placeholder = t('messagePlaceholder');
                 sendBtn.disabled = false;
             }
+            lucide.createIcons();
         }
 
         function loginWithGoogle() {
@@ -530,7 +530,6 @@
             auth.signOut().then(() => showToast(t('toastLogout'), 'info'));
         }
 
-        // Admin User Management Panel
         function toggleAdminModal(show) {
             const modal = document.getElementById('adminModal');
             modal.classList.toggle('hidden', !show);
@@ -598,7 +597,6 @@
             }
         }
 
-        // Switch Chat Room
         function switchChat(chatId, chatName, chatType) {
             activeChatId = chatId;
             activeChatName = chatName;
@@ -613,7 +611,6 @@
             initChatListener();
         }
 
-        // Load User Chats
         function loadUserChats() {
             if (!currentUser) return;
             const container = document.getElementById('dynamicChatsList');
@@ -646,7 +643,6 @@
               });
         }
 
-        // Add Friend by Email
         async function addFriendByEmail() {
             if (!currentUser) { showToast(t('authRequired'), 'warning'); return; }
             if (isUserBanned) { showToast("Banned accounts cannot add friends.", "error"); return; }
@@ -689,7 +685,6 @@
             }
         }
 
-        // Create Group Chat
         async function createGroupChat() {
             if (!currentUser) { showToast(t('authRequired'), 'warning'); return; }
             if (isUserBanned) { showToast("Banned accounts cannot create group chats.", "error"); return; }
@@ -727,7 +722,6 @@
             }
         }
 
-        // Send Message Handler
         async function handleSendMessage(e) {
             e.preventDefault();
             if (!currentUser) { showToast(t('authRequired'), 'warning'); loginWithGoogle(); return; }
@@ -771,7 +765,6 @@
             }
         }
 
-        // Real-Time Chat Listener
         function initChatListener() {
             const container = document.getElementById('messagesContainer');
             if (unsubscribeMessages) unsubscribeMessages();
