@@ -57,7 +57,7 @@
 </head>
 <body class="bg-[#070A10] text-slate-200 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-black antialiased">
 
-    <!-- Dedicated Full-Screen Banned Screen Overlay -->
+    <!-- Banned Screen Overlay -->
     <div id="bannedOverlayScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070A10]/95 backdrop-blur-xl hidden">
         <div class="bg-[#101726] border border-rose-600/40 max-w-md w-full rounded-2xl p-6 sm:p-8 shadow-2xl text-center space-y-5 cipher-glow">
             <div class="w-20 h-20 mx-auto rounded-2xl bg-rose-950/80 border border-rose-500/40 p-1 flex items-center justify-center shadow-lg shadow-rose-950/50 relative overflow-hidden">
@@ -71,7 +71,7 @@
                 <p class="text-xs font-mono text-rose-400 font-bold uppercase tracking-wide">Account Banned</p>
             </div>
             <p class="text-xs text-slate-400 font-mono leading-relaxed">
-                Your access to GhostChat has been restricted by an Administrator due to a security or policy violation.
+                Your access to GhostChat has been restricted by an Administrator.
             </p>
             <div class="p-3.5 bg-[#090D16] border border-slate-800 rounded-xl text-left text-xs font-mono space-y-1.5">
                 <div class="flex justify-between items-center"><span class="text-slate-500">Banned Account:</span> <span id="bannedUserEmail" class="text-slate-200 truncate max-w-[160px] sm:max-w-[180px]"></span></div>
@@ -97,7 +97,7 @@
             </div>
             
             <div class="flex items-center gap-1.5 sm:gap-2.5">
-                <!-- Admin Badge & Panel Button -->
+                <!-- Admin Badge -->
                 <button id="adminPanelBtn" onclick="openAdminModal()" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-mono text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-950/30">
                     <i data-lucide="shield-alert" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400"></i>
                     <span class="hidden sm:inline">Admin Panel</span>
@@ -135,9 +135,8 @@
     <!-- Main Workspace Framework -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 app-height overflow-hidden">
         
-        <!-- Sidebar: Chats & Friends (Collapsible on Mobile) -->
+        <!-- Sidebar: Chats & Friends -->
         <div id="sidebarSection" class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-full overflow-hidden shadow-xl md:col-span-1">
-            <!-- Sidebar Header / Actions -->
             <div class="p-3 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between shrink-0">
                 <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
                     <i data-lucide="message-square" class="w-4 h-4"></i> <span id="t-sidebarTitle">Chats & Friends</span>
@@ -152,9 +151,7 @@
                 </div>
             </div>
 
-            <!-- Chat Navigation List -->
             <div id="chatListContainer" class="flex-1 overflow-y-auto p-2 space-y-1.5">
-                <!-- Public Global Room -->
                 <div onclick="switchChat('public', 'Global Encrypted Channel', 'public')" id="chat-item-public" class="chat-tab-item p-3 rounded-xl cursor-pointer bg-slate-800/80 border border-slate-700 transition flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-emerald-950/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                         <i data-lucide="globe" class="w-4 h-4"></i>
@@ -169,9 +166,8 @@
             </div>
         </div>
 
-        <!-- Main Encrypted Chat Feed Area -->
+        <!-- Main Chat Area -->
         <div id="chatSection" class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-full overflow-hidden shadow-2xl md:col-span-2 lg:col-span-3">
-            <!-- Chat Room Header -->
             <div class="px-4 py-3 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between shrink-0 gap-2">
                 <div class="flex items-center gap-2.5 overflow-hidden">
                     <button id="mobileBackBtn" onclick="showMobileChatList()" class="md:hidden p-1.5 text-emerald-400 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 shrink-0 flex items-center gap-1 font-mono text-xs">
@@ -190,7 +186,7 @@
                 </div>
             </div>
 
-            <!-- Messages Scroll Stream -->
+            <!-- Messages Stream -->
             <div id="messagesContainer" class="flex-1 p-3 sm:p-6 overflow-y-auto space-y-4">
                 <div class="text-center py-12 text-slate-500 font-mono text-xs">
                     <i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i>
@@ -198,7 +194,7 @@
                 </div>
             </div>
 
-            <!-- Message Input Control Bar -->
+            <!-- Input Bar -->
             <div class="p-2.5 sm:p-4 border-t border-slate-800 bg-[#0B0F17]/80 shrink-0">
                 <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex gap-2">
                     <input 
@@ -218,7 +214,7 @@
         </div>
     </main>
 
-    <!-- Admin User Directory Modal -->
+    <!-- Admin User Modal -->
     <div id="adminModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md hidden">
         <div class="bg-[#111827] border border-rose-900/60 max-w-2xl w-full rounded-2xl p-4 sm:p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -297,7 +293,6 @@
         <span id="toastMessage">Notification</span>
     </div>
 
-    <!-- Main Logic Script -->
     <script>
         const ADMIN_EMAIL = "ianyfeature@gmail.com";
 
@@ -362,7 +357,6 @@
             return new TextDecoder().decode(decryptedBuffer);
         }
 
-        // I18N Translations
         const I18N = {
             'en': {
                 sidebarTitle: "Chats & Friends",
@@ -370,7 +364,6 @@
                 sendBtn: "Encrypt & Send",
                 messagePlaceholder: "Type a secret message to encrypt and send...",
                 loadingMessages: "Loading encrypted chat stream...",
-                decryptBtn: "🔓 Decrypt Message",
                 authRequired: "Please sign in with Google first.",
                 toastLoginSuccess: "Successfully signed in with Google!",
                 toastLogout: "Signed out successfully.",
@@ -385,7 +378,6 @@
                 sendBtn: "加密並送出",
                 messagePlaceholder: "輸入要加密並發送的秘密訊息...",
                 loadingMessages: "正在載入加密訊息串...",
-                decryptBtn: "🔓 解密訊息",
                 authRequired: "請先登入 Google 帳號。",
                 toastLoginSuccess: "已成功透過 Google 登入！",
                 toastLogout: "已安全登出。",
@@ -400,7 +392,6 @@
                 sendBtn: "加密并发送",
                 messagePlaceholder: "输入要加密并发送的秘密消息...",
                 loadingMessages: "正在加载加密消息流...",
-                decryptBtn: "🔓 解密消息",
                 authRequired: "请先登录 Google 账号。",
                 toastLoginSuccess: "已成功通过 Google 登录！",
                 toastLogout: "已安全登出。",
@@ -430,19 +421,17 @@
             lucide.createIcons();
         }
 
-        // Active App & Navigation State
         let currentUser = null;
         let isUserBanned = false;
         let activeChatId = 'public';
         let activeChatType = 'public';
         let activeChatName = 'Global Encrypted Channel';
-        let currentMobileView = 'list'; // 'list' or 'chat'
+        let currentMobileView = 'list';
         let unsubscribeMessages = null;
         let unsubscribeUserChats = null;
         let unsubscribeBanStatus = null;
         let unsubscribeUsersList = null;
 
-        // Dynamic Responsive View Toggle for Mobile & Small Tablets
         function updateResponsiveViews() {
             const isMobile = window.innerWidth < 768;
             const sidebar = document.getElementById('sidebarSection');
@@ -551,7 +540,12 @@
         }
 
         function logoutUser() {
-            auth.signOut().then(() => showToast(t('toastLogout'), 'info'));
+            auth.signOut().then(() => {
+                window.location.reload();
+            }).catch((err) => {
+                console.error("Logout error:", err);
+                window.location.reload();
+            });
         }
 
         function toggleAdminModal(show) {
@@ -815,6 +809,7 @@
             }
         }
 
+        // Automatic Direct Decryption in Real-Time Stream
         function initChatListener() {
             const container = document.getElementById('messagesContainer');
             if (unsubscribeMessages) unsubscribeMessages();
@@ -826,16 +821,27 @@
                 query = db.collection('chats').doc(activeChatId).collection('messages').orderBy('timestamp', 'asc');
             }
 
-            unsubscribeMessages = query.onSnapshot((snapshot) => {
+            unsubscribeMessages = query.onSnapshot(async (snapshot) => {
                 if (snapshot.empty) {
-                    container.innerHTML = `<div class="text-center py-12 text-slate-500 font-mono text-xs">No encrypted messages here yet. Start talking!</div>`;
+                    container.innerHTML = `<div class="text-center py-12 text-slate-500 font-mono text-xs">No messages here yet. Start talking!</div>`;
                     return;
                 }
 
-                let html = '';
-                snapshot.forEach((doc) => {
+                const msgPromises = snapshot.docs.map(async (doc) => {
                     const msg = doc.data();
-                    const msgId = doc.id;
+                    let decryptedText = "";
+                    try {
+                        decryptedText = await decryptAES(msg.ciphertext);
+                    } catch (e) {
+                        decryptedText = "[Encrypted Message]";
+                    }
+                    return { id: doc.id, ...msg, decryptedText };
+                });
+
+                const messages = await Promise.all(msgPromises);
+
+                let html = '';
+                messages.forEach((msg) => {
                     const timeStr = msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
 
                     html += `
@@ -845,26 +851,8 @@
                                 <span class="text-white font-semibold">${escapeHtml(msg.senderName)}</span>
                                 <span>${timeStr}</span>
                             </div>
-                            <div class="max-w-xl w-full bg-[#090D16] border border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-md space-y-2.5">
-                                <div>
-                                    <div class="text-[10px] font-mono uppercase tracking-wider text-cyan-400 mb-1 flex items-center gap-1">
-                                        <i data-lucide="lock" class="w-3 h-3"></i> Encrypted Payload
-                                    </div>
-                                    <div class="font-mono text-[11px] sm:text-xs text-emerald-300 break-all bg-slate-950/80 p-2.5 rounded-xl border border-slate-900 select-all">${escapeHtml(msg.ciphertext)}</div>
-                                </div>
-                                
-                                <div id="decrypted-box-${msgId}" class="hidden pt-2 border-t border-slate-800/80">
-                                    <div class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 mb-1 flex items-center gap-1">
-                                        <i data-lucide="check-circle" class="w-3 h-3"></i> Decrypted Plaintext
-                                    </div>
-                                    <div id="decrypted-text-${msgId}" class="text-xs sm:text-sm font-sans text-slate-100 bg-emerald-950/20 p-2.5 rounded-xl border border-emerald-500/30 whitespace-pre-wrap"></div>
-                                </div>
-
-                                <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
-                                    <button onclick="decryptMessageDirectly('${msgId}', '${msg.ciphertext}')" id="btn-decrypt-${msgId}" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 font-mono text-xs rounded-lg border border-emerald-900/50 transition flex items-center gap-1.5 active:scale-95">
-                                        <i data-lucide="key-round" class="w-3.5 h-3.5"></i> ${t('decryptBtn')}
-                                    </button>
-                                </div>
+                            <div class="max-w-xl w-full bg-[#090D16] border border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-md">
+                                <div class="text-xs sm:text-sm font-sans text-slate-100 whitespace-pre-wrap leading-relaxed">${escapeHtml(msg.decryptedText)}</div>
                             </div>
                         </div>
                     `;
@@ -877,27 +865,6 @@
                 console.error("Chat sync error:", err);
                 container.innerHTML = `<div class="text-center py-12 text-rose-400 font-mono text-xs">Error syncing chat: ${err.message}</div>`;
             });
-        }
-
-        // Direct One-Click AES-256 Decryption
-        async function decryptMessageDirectly(msgId, ciphertext) {
-            const btn = document.getElementById(`btn-decrypt-${msgId}`);
-            if (btn) btn.disabled = true;
-
-            try {
-                const plaintext = await decryptAES(ciphertext);
-                const box = document.getElementById(`decrypted-box-${msgId}`);
-                const textEl = document.getElementById(`decrypted-text-${msgId}`);
-
-                textEl.textContent = plaintext;
-                box.classList.remove('hidden');
-                if (btn) btn.remove();
-                showToast("Message decrypted successfully!", "success");
-            } catch (err) {
-                console.error("Decryption error:", err);
-                showToast("Decryption failed: Corrupt payload", "error");
-                if (btn) btn.disabled = false;
-            }
         }
 
         function toggleAddFriendModal(show) { document.getElementById('addFriendModal').classList.toggle('hidden', !show); }
