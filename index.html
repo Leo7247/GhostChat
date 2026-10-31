@@ -441,6 +441,7 @@
         let activeChatType = 'public';
         let activeChatName = 'Global Encrypted Channel';
         let unsubscribeMessages = null;
+        let unsubscribeUserChats = null;
         let unsubscribeBanStatus = null;
         let unsubscribeUsersList = null;
         let pendingDecryptMsgId = null;
@@ -484,6 +485,7 @@
                 adminBtn.classList.add('hidden');
                 adminBtn.classList.remove('flex');
                 if (unsubscribeBanStatus) unsubscribeBanStatus();
+                if (unsubscribeUserChats) unsubscribeUserChats();
                 setBannedState(false);
             }
         });
@@ -614,33 +616,54 @@
         function loadUserChats() {
             if (!currentUser) return;
             const container = document.getElementById('dynamicChatsList');
+            if (unsubscribeUserChats) unsubscribeUserChats();
 
-            db.collection('chats')
-              .where('participants', 'array-contains', currentUser.uid)
-              .onSnapshot((snapshot) => {
-                  let html = '';
-                  snapshot.forEach((doc) => {
-                      const chat = doc.data();
-                      const chatId = doc.id;
-                      const isGroup = chat.type === 'group';
-                      const chatName = isGroup ? chat.name : chat.peerName || 'Direct Message';
-                      const icon = isGroup ? 'users' : 'user';
+            const isAdmin = currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-                      html += `
-                          <div onclick="switchChat('${chatId}', '${escapeHtml(chatName)}', '${chat.type}')" id="chat-item-${chatId}" class="chat-tab-item p-2.5 rounded-xl cursor-pointer hover:bg-slate-800/60 border border-transparent transition flex items-center gap-3">
-                              <div class="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
-                                  <i data-lucide="${icon}" class="w-4 h-4 text-emerald-400"></i>
-                              </div>
-                              <div class="overflow-hidden">
-                                  <h4 class="text-xs font-mono font-semibold text-white truncate">${escapeHtml(chatName)}</h4>
-                                  <p class="text-[10px] text-slate-400 truncate uppercase">${chat.type}</p>
-                              </div>
-                          </div>
-                      `;
-                  });
-                  container.innerHTML = html;
-                  lucide.createIcons();
-              });
+            let query = db.collection('chats');
+            if (!isAdmin) {
+                query = query.where('participants', 'array-contains', currentUser.uid);
+            } else {
+                query = query.orderBy('createdAt', 'desc');
+            }
+
+            unsubscribeUserChats = query.onSnapshot((snapshot) => {
+                if (snapshot.empty) {
+                    container.innerHTML = `<div class="text-[11px] font-mono text-slate-500 p-2 text-center">No active chats found.</div>`;
+                    return;
+                }
+
+                let html = '';
+                snapshot.forEach((doc) => {
+                    const chat = doc.data();
+                    const chatId = doc.id;
+                    const isGroup = chat.type === 'group';
+                    let chatName = isGroup ? chat.name : (chat.peerName || 'Direct Message');
+
+                    if (isAdmin && !isGroup) {
+                        chatName = `[DM] ${chat.peerName || chatId}`;
+                    }
+
+                    const icon = isGroup ? 'users' : 'user';
+                    const adminBadge = isAdmin ? `<span class="text-[8px] font-mono bg-rose-950 text-rose-400 border border-rose-800 px-1 rounded ml-1">ADMIN INSPECT</span>` : '';
+
+                    html += `
+                        <div onclick="switchChat('${chatId}', '${escapeHtml(chatName)}', '${chat.type}')" id="chat-item-${chatId}" class="chat-tab-item p-2.5 rounded-xl cursor-pointer hover:bg-slate-800/60 border border-transparent transition flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                                <i data-lucide="${icon}" class="w-4 h-4 text-emerald-400"></i>
+                            </div>
+                            <div class="overflow-hidden flex-1">
+                                <h4 class="text-xs font-mono font-semibold text-white truncate flex items-center">
+                                    ${escapeHtml(chatName)} ${adminBadge}
+                                </h4>
+                                <p class="text-[10px] text-slate-400 truncate uppercase">${chat.type} · ${chat.participants ? chat.participants.length : 0} members</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+                lucide.createIcons();
+            });
         }
 
         async function addFriendByEmail() {
