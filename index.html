@@ -128,14 +128,14 @@
                 <p class="text-xs font-mono text-rose-400 font-bold uppercase tracking-wide">Account Banned</p>
             </div>
             <p class="text-xs text-slate-400 font-mono leading-relaxed">
-                Your access to GhostChat has been restricted by an Administrator.
+                Your access to GhostChat has been restricted by an Administrator due to a policy violation.
             </p>
             <div class="p-3.5 bg-black/40 border border-theme-border rounded-xl text-left text-xs font-mono space-y-1.5">
-                <div class="flex justify-between items-center"><span class="text-slate-500">Banned Account:</span> <span id="bannedUserEmail" class="text-slate-200 truncate max-w-[180px]"></span></div>
-                <div class="flex justify-between items-center"><span class="text-slate-500">Contact Admin:</span> <span class="text-theme-accent select-all">ianyfeature@gmail.com</span></div>
+                <div class="flex justify-between items-center"><span class="text-slate-500">Banned Account:</span> <span id="bannedUserEmail" class="text-slate-200 font-bold truncate max-w-[180px]"></span></div>
+                <div class="flex justify-between items-center"><span class="text-slate-500">Contact Admin:</span> <span class="text-theme-accent font-bold select-all">ianyfeature@gmail.com</span></div>
             </div>
-            <button onclick="logoutUser()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-mono font-bold text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-600/30">
-                Sign Out & Switch Account
+            <button onclick="logoutUser()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-mono font-bold text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-600/30 flex items-center justify-center gap-2">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out & Switch Account
             </button>
         </div>
     </div>
@@ -311,9 +311,14 @@
                 </div>
             </div>
 
-            <div class="border-t border-theme-border pt-3 flex justify-end gap-2">
-                <button onclick="toggleUserSettingsModal(false)" class="px-4 py-2 bg-theme-surface text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
-                <button onclick="saveUserSettings()" class="px-4 py-2 bg-theme-accent text-slate-950 font-mono font-bold text-xs rounded-xl hover:opacity-90">Save Changes</button>
+            <div class="border-t border-theme-border pt-3 flex items-center justify-between gap-2">
+                <button onclick="logoutUser()" class="px-4 py-2 bg-rose-950/80 hover:bg-rose-900 border border-rose-800 text-rose-300 font-mono text-xs rounded-xl flex items-center gap-1.5 transition active:scale-95">
+                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sign Out
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="toggleUserSettingsModal(false)" class="px-4 py-2 bg-theme-surface text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
+                    <button onclick="saveUserSettings()" class="px-4 py-2 bg-theme-accent text-slate-950 font-mono font-bold text-xs rounded-xl hover:opacity-90">Save Changes</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1576,7 +1581,7 @@
                 snapshot.forEach(doc => {
                     const u = doc.data();
                     const isBanned = u.isBanned === true;
-                    const isAdmin = u.email === ADMIN_EMAIL;
+                    const isSelf = currentUser && (u.uid === currentUser.uid || (u.email && u.email.toLowerCase() === currentUser.email.toLowerCase()));
                     html += `
                         <div class="p-3 bg-black/40 border border-theme-border rounded-xl flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3 overflow-hidden">
@@ -1584,13 +1589,17 @@
                                 <div class="overflow-hidden font-mono">
                                     <div class="flex items-center gap-2">
                                         <span class="text-xs font-bold text-white truncate">${escapeHtml(u.displayName || u.username || 'Anon')}</span>
-                                        ${isAdmin ? `<span class="text-[9px] px-1 py-0.5 bg-rose-950 text-rose-400 border border-rose-800 rounded">ADMIN</span>` : ''}
+                                        ${isSelf ? `<span class="text-[9px] px-1 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded">YOU (ADMIN)</span>` : ''}
                                         ${isBanned ? `<span class="text-[9px] px-1 py-0.5 bg-rose-900 text-rose-300 rounded">BANNED</span>` : `<span class="text-[9px] px-1 py-0.5 bg-emerald-950 text-emerald-400 rounded">ACTIVE</span>`}
                                     </div>
                                     <p class="text-[10px] text-slate-400 truncate">@${escapeHtml(u.username || 'no_handle')} · ${escapeHtml(u.email || '')}</p>
                                 </div>
                             </div>
-                            ${!isAdmin ? `<button onclick="toggleUserBan('${u.uid}', ${!isBanned})" class="px-3 py-1.5 ${isBanned ? 'bg-emerald-600 text-slate-950' : 'bg-rose-600 text-white'} font-mono text-xs font-bold rounded-lg">${isBanned ? 'Unban' : 'Ban'}</button>` : ''}
+                            ${!isSelf ? `
+                                <button onclick="toggleUserBan('${u.uid}', ${!isBanned})" class="px-3 py-1.5 ${isBanned ? 'bg-emerald-600 text-slate-950' : 'bg-rose-600 text-white'} font-mono text-xs font-bold rounded-lg transition active:scale-95">
+                                    ${isBanned ? 'Unban' : 'Ban'}
+                                </button>
+                            ` : ''}
                         </div>
                     `;
                 });
@@ -1599,7 +1608,23 @@
         }
 
         async function toggleUserBan(uid, banStatus) {
-            await db.collection('users').doc(uid).update({ isBanned: banStatus });
+            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
+            
+            // 🛡️ Prevent Admin from banning their own account
+            if (uid === currentUser.uid) {
+                showToast("You cannot ban your own Admin account!", "error");
+                return;
+            }
+
+            try {
+                await db.collection('users').doc(uid).update({ 
+                    isBanned: banStatus,
+                    bannedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showToast(banStatus ? "User banned!" : "User unbanned!", banStatus ? "warning" : "success");
+            } catch (err) {
+                showToast("Failed to update status: " + err.message, "error");
+            }
         }
 
         function escapeHtml(text) {
