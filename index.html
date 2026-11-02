@@ -18,14 +18,14 @@
             theme: {
                 extend: {
                     colors: {
-                        cipher: {
-                            base: '#070A10',
-                            card: '#101726',
-                            surface: '#182234',
-                            border: '#1E293B',
-                            accent: '#10B981',
-                            accentHover: '#059669',
-                            glow: 'rgba(16, 185, 129, 0.15)',
+                        theme: {
+                            base: 'var(--bg-base)',
+                            card: 'var(--bg-card)',
+                            surface: 'var(--bg-surface)',
+                            border: 'var(--border-color)',
+                            accent: 'var(--accent-color)',
+                            accentHover: 'var(--accent-hover)',
+                            glow: 'var(--accent-glow)',
                             danger: '#EF4444'
                         }
                     },
@@ -42,24 +42,81 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
+        :root {
+            --bg-base: #070A10;
+            --bg-card: #101726;
+            --bg-surface: #182234;
+            --border-color: #1E293B;
+            --accent-color: #10B981;
+            --accent-hover: #059669;
+            --accent-glow: rgba(16, 185, 129, 0.15);
+        }
+
+        .theme-spooky {
+            --bg-base: #070A10;
+            --bg-card: #101726;
+            --bg-surface: #182234;
+            --border-color: #1E293B;
+            --accent-color: #10B981;
+            --accent-hover: #059669;
+            --accent-glow: rgba(16, 185, 129, 0.15);
+        }
+        .theme-matrix {
+            --bg-base: #021206;
+            --bg-card: #052E16;
+            --bg-surface: #064E3B;
+            --border-color: #14532D;
+            --accent-color: #22C55E;
+            --accent-hover: #16A34A;
+            --accent-glow: rgba(34, 197, 94, 0.2);
+        }
+        .theme-cyberpunk {
+            --bg-base: #18041A;
+            --bg-card: #280930;
+            --bg-surface: #3D0C4E;
+            --border-color: #581C87;
+            --accent-color: #F43F5E;
+            --accent-hover: #E11D48;
+            --accent-glow: rgba(244, 63, 94, 0.2);
+        }
+        .theme-midnight {
+            --bg-base: #0F0A1C;
+            --bg-card: #1A1230;
+            --bg-surface: #261A47;
+            --border-color: #3B2A6B;
+            --accent-color: #A855F7;
+            --accent-hover: #9333EA;
+            --accent-glow: rgba(168, 85, 247, 0.2);
+        }
+        .theme-pureDark {
+            --bg-base: #000000;
+            --bg-card: #111111;
+            --bg-surface: #1C1C1C;
+            --border-color: #333333;
+            --accent-color: #E2E8F0;
+            --accent-hover: #CBD5E1;
+            --accent-glow: rgba(226, 232, 240, 0.15);
+        }
+
         ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: #070A10; }
-        ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 9999px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 9999px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
-        .cipher-glow { box-shadow: 0 0 25px rgba(16, 185, 129, 0.12); }
-        .cipher-input:focus { box-shadow: 0 0 0 2px #10B981, 0 0 15px rgba(16, 185, 129, 0.2); }
+        .cipher-glow { box-shadow: 0 0 25px var(--accent-glow); }
+        .cipher-input:focus { box-shadow: 0 0 0 2px var(--accent-color), 0 0 15px var(--accent-glow); }
         .app-height { height: calc(100dvh - 70px); }
         @media (max-width: 767px) {
             .app-height { height: calc(100dvh - 65px); }
         }
     </style>
 </head>
-<body class="bg-[#070A10] text-slate-200 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-black antialiased">
+<body id="appBody" class="theme-spooky bg-theme-base text-slate-200 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-black antialiased transition-colors duration-300">
 
     <!-- Banned Screen Overlay -->
-    <div id="bannedOverlayScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070A10]/95 backdrop-blur-xl hidden">
-        <div class="bg-[#101726] border border-rose-600/40 max-w-md w-full rounded-2xl p-6 sm:p-8 shadow-2xl text-center space-y-5 cipher-glow">
+    <div id="bannedOverlayScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl hidden">
+        <div class="bg-theme-card border border-rose-600/40 max-w-md w-full rounded-2xl p-6 sm:p-8 shadow-2xl text-center space-y-5 cipher-glow">
             <div class="w-20 h-20 mx-auto rounded-2xl bg-rose-950/80 border border-rose-500/40 p-1 flex items-center justify-center shadow-lg shadow-rose-950/50 relative overflow-hidden">
                 <img src="https://i.imgur.com/PjKAlXP.png" alt="GhostChat Icon" class="w-full h-full rounded-xl object-cover opacity-80">
                 <div class="absolute inset-0 bg-rose-950/60 flex items-center justify-center text-rose-400">
@@ -73,9 +130,9 @@
             <p class="text-xs text-slate-400 font-mono leading-relaxed">
                 Your access to GhostChat has been restricted by an Administrator.
             </p>
-            <div class="p-3.5 bg-[#090D16] border border-slate-800 rounded-xl text-left text-xs font-mono space-y-1.5">
-                <div class="flex justify-between items-center"><span class="text-slate-500">Banned Account:</span> <span id="bannedUserEmail" class="text-slate-200 truncate max-w-[160px] sm:max-w-[180px]"></span></div>
-                <div class="flex justify-between items-center"><span class="text-slate-500">Contact Admin:</span> <span class="text-emerald-400 select-all">ianyfeature@gmail.com</span></div>
+            <div class="p-3.5 bg-black/40 border border-theme-border rounded-xl text-left text-xs font-mono space-y-1.5">
+                <div class="flex justify-between items-center"><span class="text-slate-500">Banned Account:</span> <span id="bannedUserEmail" class="text-slate-200 truncate max-w-[180px]"></span></div>
+                <div class="flex justify-between items-center"><span class="text-slate-500">Contact Admin:</span> <span class="text-theme-accent select-all">ianyfeature@gmail.com</span></div>
             </div>
             <button onclick="logoutUser()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-mono font-bold text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-600/30">
                 Sign Out & Switch Account
@@ -83,35 +140,264 @@
         </div>
     </div>
 
+    <!-- Onboarding Modal -->
+    <div id="onboardingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl hidden">
+        <div class="bg-theme-card border border-theme-border max-w-md w-full rounded-2xl p-6 sm:p-8 shadow-2xl text-center space-y-5 cipher-glow">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-theme-surface border border-theme-border p-1 flex items-center justify-center">
+                <img src="https://i.imgur.com/PjKAlXP.png" class="w-full h-full rounded-xl object-cover">
+            </div>
+            <div class="space-y-1">
+                <h2 class="text-xl font-bold font-mono text-white uppercase tracking-wider">Welcome to GhostChat</h2>
+                <p class="text-xs font-mono text-theme-accent uppercase font-semibold">Step 1: Set Up Your Identity</p>
+            </div>
+
+            <form onsubmit="handleOnboardingSubmit(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="text-[11px] font-mono text-slate-400 block mb-1">Unique Username (@handle):</label>
+                    <div class="relative">
+                        <span class="absolute left-3.5 top-2.5 text-slate-500 font-mono text-xs">@</span>
+                        <input type="text" id="obUsernameInput" required pattern="[a-zA-Z0-9_]{3,20}" placeholder="username" class="w-full bg-black/40 text-slate-100 placeholder-slate-600 rounded-xl pl-8 pr-3.5 py-2.5 text-xs font-mono border border-theme-border outline-none cipher-input">
+                    </div>
+                    <span class="text-[10px] text-slate-500 font-mono mt-1 block">3-20 characters (letters, numbers, underscores)</span>
+                </div>
+
+                <div>
+                    <label class="text-[11px] font-mono text-slate-400 block mb-1">Display Name:</label>
+                    <input type="text" id="obDisplayNameInput" required placeholder="Ghost Agent" class="w-full bg-black/40 text-slate-100 placeholder-slate-600 rounded-xl px-3.5 py-2.5 text-xs font-mono border border-theme-border outline-none cipher-input">
+                </div>
+
+                <div>
+                    <label class="text-[11px] font-mono text-slate-400 block mb-1">Select App Theme:</label>
+                    <select id="obThemeSelect" class="w-full bg-black/40 text-slate-100 rounded-xl px-3.5 py-2.5 text-xs font-mono border border-theme-border outline-none cursor-pointer">
+                        <option value="spooky" class="bg-slate-900">Spooky Emerald (Default)</option>
+                        <option value="matrix" class="bg-slate-900">Matrix Neon</option>
+                        <option value="cyberpunk" class="bg-slate-900">Cyberpunk Sunset</option>
+                        <option value="midnight" class="bg-slate-900">Midnight Purple</option>
+                        <option value="pureDark" class="bg-slate-900">Monochrome Dark</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-[11px] font-mono text-slate-400 block mb-1">Short Bio:</label>
+                    <input type="text" id="obBioInput" placeholder="Decrypting reality..." class="w-full bg-black/40 text-slate-100 placeholder-slate-600 rounded-xl px-3.5 py-2.5 text-xs font-mono border border-theme-border outline-none cipher-input">
+                </div>
+
+                <button type="submit" id="obSubmitBtn" class="w-full py-3 bg-theme-accent hover:opacity-90 text-slate-950 font-mono font-bold text-xs rounded-xl transition active:scale-95 shadow-lg">
+                    Complete Setup & Launch Workspace
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Discord-Style User Profile Modal -->
+    <div id="discordProfileModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="bg-theme-card border border-theme-border max-w-sm w-full rounded-2xl overflow-hidden shadow-2xl relative">
+            <div id="profBanner" class="h-24 bg-theme-accent transition-colors"></div>
+            <div class="px-5 pb-5 relative">
+                <img id="profAvatar" src="" class="w-20 h-20 rounded-full border-4 border-theme-card -mt-10 object-cover bg-slate-900 shadow-md">
+                <div class="mt-2 space-y-0.5">
+                    <h3 id="profName" class="text-base font-bold text-white font-mono"></h3>
+                    <p id="profHandle" class="text-xs text-theme-accent font-mono font-semibold"></p>
+                </div>
+                <div class="mt-4 border-t border-theme-border pt-3 space-y-2">
+                    <p class="text-[10px] text-slate-500 font-mono uppercase tracking-wider font-bold">About Me</p>
+                    <p id="profBio" class="text-xs text-slate-300 font-mono leading-relaxed"></p>
+                    <div id="profPrivacyWarning" class="hidden text-[10px] font-mono text-amber-400 bg-amber-950/40 p-2 rounded-lg border border-amber-800/40">
+                        🔒 User profile visibility is restricted.
+                    </div>
+                </div>
+                <div class="mt-5 flex justify-end gap-2">
+                    <button onclick="toggleDiscordProfile(false)" class="px-4 py-2 bg-theme-surface text-slate-300 font-mono text-xs rounded-xl hover:bg-slate-700">Close</button>
+                    <button id="profDmBtn" class="px-4 py-2 bg-theme-accent text-slate-950 font-mono font-bold text-xs rounded-xl hover:opacity-90 shadow-md">Start DM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Settings Modal -->
+    <div id="userSettingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="bg-theme-card border border-theme-border max-w-lg w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-theme-border pb-3">
+                <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-4 h-4 text-theme-accent"></i> User Settings
+                </h3>
+                <button onclick="toggleUserSettingsModal(false)" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Settings Tabs Header -->
+            <div class="flex border-b border-theme-border text-xs font-mono">
+                <button onclick="switchSettingsTab('profile')" id="tabBtn-profile" class="flex-1 py-2 text-center text-theme-accent border-b-2 border-theme-accent font-bold">Profile</button>
+                <button onclick="switchSettingsTab('appearance')" id="tabBtn-appearance" class="flex-1 py-2 text-center text-slate-400 hover:text-white">Appearance</button>
+                <button onclick="switchSettingsTab('security')" id="tabBtn-security" class="flex-1 py-2 text-center text-slate-400 hover:text-white">Security & Privacy</button>
+            </div>
+
+            <!-- Tab 1: Profile -->
+            <div id="tabContent-profile" class="space-y-3 flex-1 overflow-y-auto pr-1">
+                <div>
+                    <label class="text-xs font-mono text-slate-400 block mb-1">Display Name:</label>
+                    <input type="text" id="setDisplayName" class="w-full bg-black/40 text-slate-100 rounded-xl px-3.5 py-2 text-xs font-mono border border-theme-border outline-none cipher-input">
+                </div>
+                <div>
+                    <label class="text-xs font-mono text-slate-400 block mb-1">Username (@handle):</label>
+                    <input type="text" id="setUsername" class="w-full bg-black/40 text-slate-100 rounded-xl px-3.5 py-2 text-xs font-mono border border-theme-border outline-none cipher-input">
+                </div>
+                <div>
+                    <label class="text-xs font-mono text-slate-400 block mb-1">Avatar Image URL:</label>
+                    <input type="text" id="setPhotoURL" class="w-full bg-black/40 text-slate-100 rounded-xl px-3.5 py-2 text-xs font-mono border border-theme-border outline-none cipher-input">
+                </div>
+                <div>
+                    <label class="text-xs font-mono text-slate-400 block mb-1">Bio:</label>
+                    <textarea id="setBio" rows="2" class="w-full bg-black/40 text-slate-100 rounded-xl px-3.5 py-2 text-xs font-mono border border-theme-border outline-none cipher-input"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs font-mono text-slate-400 block mb-1">Status Message:</label>
+                    <input type="text" id="setStatusMessage" placeholder="Online" class="w-full bg-black/40 text-slate-100 rounded-xl px-3.5 py-2 text-xs font-mono border border-theme-border outline-none cipher-input">
+                </div>
+            </div>
+
+            <!-- Tab 2: Appearance -->
+            <div id="tabContent-appearance" class="space-y-3 flex-1 overflow-y-auto pr-1 hidden">
+                <label class="text-xs font-mono text-slate-400 block uppercase">Choose Workspace Theme</label>
+                <div class="space-y-2">
+                    <label class="flex items-center justify-between p-3 bg-black/40 border border-theme-border rounded-xl cursor-pointer">
+                        <span class="text-xs font-mono text-emerald-400">Spooky Emerald (Default)</span>
+                        <input type="radio" name="themeRadio" value="spooky" onchange="previewTheme('spooky')" class="accent-emerald-500">
+                    </label>
+                    <label class="flex items-center justify-between p-3 bg-black/40 border border-theme-border rounded-xl cursor-pointer">
+                        <span class="text-xs font-mono text-green-400">Matrix Neon</span>
+                        <input type="radio" name="themeRadio" value="matrix" onchange="previewTheme('matrix')" class="accent-green-500">
+                    </label>
+                    <label class="flex items-center justify-between p-3 bg-black/40 border border-theme-border rounded-xl cursor-pointer">
+                        <span class="text-xs font-mono text-rose-400">Cyberpunk Sunset</span>
+                        <input type="radio" name="themeRadio" value="cyberpunk" onchange="previewTheme('cyberpunk')" class="accent-rose-500">
+                    </label>
+                    <label class="flex items-center justify-between p-3 bg-black/40 border border-theme-border rounded-xl cursor-pointer">
+                        <span class="text-xs font-mono text-purple-400">Midnight Purple</span>
+                        <input type="radio" name="themeRadio" value="midnight" onchange="previewTheme('midnight')" class="accent-purple-500">
+                    </label>
+                    <label class="flex items-center justify-between p-3 bg-black/40 border border-theme-border rounded-xl cursor-pointer">
+                        <span class="text-xs font-mono text-slate-200">Monochrome Dark</span>
+                        <input type="radio" name="themeRadio" value="pureDark" onchange="previewTheme('pureDark')" class="accent-slate-200">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Tab 3: Security & Privacy -->
+            <div id="tabContent-security" class="space-y-3 flex-1 overflow-y-auto pr-1 hidden">
+                <div class="p-3 bg-black/40 border border-theme-border rounded-xl space-y-3 text-xs font-mono">
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <span class="text-slate-200">Filter Bad Words & NSFW Content</span>
+                        <input type="checkbox" id="setFilterBadWords" class="accent-theme-accent rounded">
+                    </label>
+                    <p class="text-[10px] text-slate-400">When enabled, messages containing profanity or NSFW text are automatically flagged and hidden.</p>
+
+                    <hr class="border-theme-border">
+
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <span class="text-slate-200">Allow Public Profile View</span>
+                        <input type="checkbox" id="setAllowPublicProfile" class="accent-theme-accent rounded">
+                    </label>
+                    <p class="text-[10px] text-slate-400">Controls whether other members can view your bio & details when clicking your avatar.</p>
+
+                    <hr class="border-theme-border">
+
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <span class="text-slate-200">Auto-Accept Direct Messages</span>
+                        <input type="checkbox" id="setAutoAcceptDM" class="accent-theme-accent rounded">
+                    </label>
+                    <p class="text-[10px] text-slate-400">If disabled, incoming DMs require your manual approval in the DM Requests tab.</p>
+                </div>
+            </div>
+
+            <div class="border-t border-theme-border pt-3 flex justify-end gap-2">
+                <button onclick="toggleUserSettingsModal(false)" class="px-4 py-2 bg-theme-surface text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
+                <button onclick="saveUserSettings()" class="px-4 py-2 bg-theme-accent text-slate-950 font-mono font-bold text-xs rounded-xl hover:opacity-90">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending DM Requests Modal -->
+    <div id="dmRequestsModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="bg-theme-card border border-theme-border max-w-md w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-theme-border pb-3">
+                <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+                    <i data-lucide="mail-warning" class="w-4 h-4 text-theme-accent"></i> Pending DM Requests
+                </h3>
+                <button onclick="toggleDMRequestsModal(false)" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="dmRequestsList" class="flex-1 overflow-y-auto space-y-2 pr-1"></div>
+            <div class="border-t border-theme-border pt-3 flex justify-end">
+                <button onclick="toggleDMRequestsModal(false)" class="px-4 py-2 bg-theme-surface text-slate-300 font-mono text-xs rounded-xl">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Encrypted Image Attachment Modal -->
+    <div id="imageAttachModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-theme-card border border-theme-border max-w-md w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-theme-border pb-3">
+                <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+                    <i data-lucide="image" class="w-4 h-4 text-theme-accent"></i> Attach Encrypted Image
+                </h3>
+                <button onclick="toggleImageAttachModal(false)" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <label class="text-xs text-slate-400 font-mono block">Direct Image URL (HTTPS):</label>
+                <input type="url" id="imageUrlInput" placeholder="https://i.imgur.com/example.png" class="w-full bg-black/40 text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-theme-border outline-none cipher-input">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="toggleImageAttachModal(false)" class="px-4 py-2 bg-theme-surface text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
+                <button onclick="confirmAttachImage()" class="px-4 py-2 bg-theme-accent text-slate-950 font-mono font-bold text-xs rounded-xl">Attach Image</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Header Navigation -->
-    <header class="border-b border-slate-800/80 bg-[#0B0F17]/95 backdrop-blur-md sticky top-0 z-40">
+    <header class="border-b border-theme-border bg-theme-card/95 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-3">
             <div class="flex items-center space-x-2.5 sm:space-x-3">
-                <img src="https://i.imgur.com/PjKAlXP.png" alt="GhostChat Logo" class="h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-emerald-500/40 object-cover shadow-lg shadow-emerald-500/20">
+                <img src="https://i.imgur.com/PjKAlXP.png" alt="GhostChat Logo" class="h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-theme-accent/40 object-cover shadow-lg">
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-sm sm:text-base font-bold tracking-tight text-white font-mono">GHOST<span class="text-emerald-400">CHAT</span></h1>
-                        <span class="text-[9px] sm:text-[10px] uppercase font-semibold bg-emerald-950/70 border border-emerald-500/30 text-emerald-400 px-1.5 sm:px-2 py-0.5 rounded-full">AES-GCM-256</span>
+                        <h1 class="text-sm sm:text-base font-bold tracking-tight text-white font-mono">GHOST<span class="text-theme-accent">CHAT</span></h1>
+                        <span class="text-[9px] sm:text-[10px] uppercase font-semibold bg-black/60 border border-theme-accent/30 text-theme-accent px-1.5 sm:px-2 py-0.5 rounded-full">AES-GCM-256</span>
                     </div>
                 </div>
             </div>
             
             <div class="flex items-center gap-1.5 sm:gap-2.5">
-                <!-- Group Settings Header Button (visible when in a group) -->
-                <button id="groupSettingsBtn" onclick="openGroupSettingsModal()" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-400 font-mono text-xs rounded-xl transition active:scale-95">
+                <!-- DM Requests Button -->
+                <button id="dmRequestsBtn" onclick="openDMRequestsModal()" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-theme-accent text-slate-950 font-mono text-xs font-bold rounded-xl transition active:scale-95 shadow-lg">
+                    <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+                    <span id="dmReqCount" class="bg-black/30 px-1.5 py-0.5 rounded-full text-[10px]">0</span>
+                </button>
+
+                <!-- Group Settings Button -->
+                <button id="groupSettingsBtn" onclick="openGroupSettingsModal()" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-theme-surface hover:opacity-90 border border-theme-border text-theme-accent font-mono text-xs rounded-xl transition active:scale-95">
                     <i data-lucide="settings" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
                     <span class="hidden sm:inline">Group Settings</span>
                 </button>
 
+                <!-- User Settings Button -->
+                <button id="userSettingsBtn" onclick="openUserSettingsModal()" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-theme-surface hover:opacity-90 border border-theme-border text-white font-mono text-xs rounded-xl transition active:scale-95">
+                    <i data-lucide="sliders" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-theme-accent"></i>
+                </button>
+
                 <!-- Admin Badge -->
-                <button id="adminPanelBtn" onclick="openAdminModal()" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-mono text-xs rounded-xl transition active:scale-95 shadow-lg shadow-rose-950/30">
+                <button id="adminPanelBtn" onclick="openAdminModal()" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-mono text-xs rounded-xl transition active:scale-95 shadow-lg">
                     <i data-lucide="shield-alert" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400"></i>
-                    <span class="hidden sm:inline">Admin Panel</span>
+                    <span class="hidden sm:inline">Admin</span>
                 </button>
 
                 <!-- Language Selector -->
-                <div class="relative flex items-center bg-slate-900/90 border border-slate-800 rounded-xl px-2 py-1.5">
-                    <i data-lucide="globe" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400 mr-1.5 shrink-0"></i>
+                <div class="relative flex items-center bg-black/40 border border-theme-border rounded-xl px-2 py-1.5">
+                    <i data-lucide="globe" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-theme-accent mr-1.5 shrink-0"></i>
                     <select id="langSelector" onchange="changeLanguage(this.value)" class="bg-transparent text-[11px] sm:text-xs font-mono text-slate-200 outline-none cursor-pointer pr-1">
                         <option value="en" class="bg-slate-900">EN</option>
                         <option value="zh-TW" class="bg-slate-900">繁中</option>
@@ -119,15 +405,15 @@
                     </select>
                 </div>
 
-                <!-- Auth Profile Widget -->
+                <!-- Auth Widget -->
                 <div id="authContainer" class="flex items-center">
-                    <button id="googleLoginBtn" onclick="loginWithGoogle()" class="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs rounded-xl border border-slate-700 transition active:scale-95">
+                    <button id="googleLoginBtn" onclick="loginWithGoogle()" class="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 bg-theme-surface hover:opacity-90 text-white font-mono text-xs rounded-xl border border-theme-border transition active:scale-95">
                         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.15 21.32 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.18C.43 8.13 0 9.87 0 11.76s.43 3.63 1.18 5.15l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.15 2.68 1.18 6.61l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
                         <span id="t-loginBtn" class="hidden xs:inline">Google Login</span>
                     </button>
                     
-                    <div id="userProfile" class="hidden items-center gap-2 bg-slate-900/90 border border-slate-800 px-2.5 py-1 rounded-xl">
-                        <img id="userAvatar" src="" alt="Avatar" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-emerald-500/50">
+                    <div id="userProfile" class="hidden items-center gap-2 bg-black/40 border border-theme-border px-2.5 py-1 rounded-xl">
+                        <img id="userAvatar" src="" alt="Avatar" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-theme-accent/50 cursor-pointer" onclick="openCurrentDiscordProfile()">
                         <span id="userName" class="text-xs font-mono text-slate-200 truncate max-w-[80px] sm:max-w-[120px]"></span>
                         <button onclick="logoutUser()" title="Sign Out" class="text-slate-400 hover:text-rose-400 transition ml-0.5">
                             <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
@@ -142,24 +428,24 @@
     <main class="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 app-height overflow-hidden">
         
         <!-- Sidebar: Chats & Friends -->
-        <div id="sidebarSection" class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-full overflow-hidden shadow-xl md:col-span-1">
-            <div class="p-3 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between shrink-0">
-                <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+        <div id="sidebarSection" class="bg-theme-card border border-theme-border rounded-2xl flex flex-col h-full overflow-hidden shadow-xl md:col-span-1">
+            <div class="p-3 border-b border-theme-border bg-black/20 flex items-center justify-between shrink-0">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-theme-accent flex items-center gap-1.5">
                     <i data-lucide="message-square" class="w-4 h-4"></i> <span id="t-sidebarTitle">Chats & Friends</span>
                 </span>
                 <div class="flex items-center gap-1">
-                    <button onclick="openAddFriendModal()" title="Add Friend by Email" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded-lg border border-slate-700 transition">
+                    <button onclick="openAddFriendModal()" title="Add Friend by Username/Email" class="p-1.5 bg-theme-surface hover:opacity-90 text-theme-accent rounded-lg border border-theme-border transition">
                         <i data-lucide="user-plus" class="w-4 h-4"></i>
                     </button>
-                    <button onclick="openCreateGroupModal()" title="Create Group Chat" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-lg border border-slate-700 transition">
+                    <button onclick="openCreateGroupModal()" title="Create Group Chat" class="p-1.5 bg-theme-surface hover:opacity-90 text-cyan-400 rounded-lg border border-theme-border transition">
                         <i data-lucide="users" class="w-4 h-4"></i>
                     </button>
                 </div>
             </div>
 
             <div id="chatListContainer" class="flex-1 overflow-y-auto p-2 space-y-1.5">
-                <div onclick="switchChat('public', 'Global Encrypted Channel', 'public')" id="chat-item-public" class="chat-tab-item p-3 rounded-xl cursor-pointer bg-slate-800/80 border border-slate-700 transition flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-950/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                <div onclick="switchChat('public', 'Global Encrypted Channel', 'public')" id="chat-item-public" class="chat-tab-item p-3 rounded-xl cursor-pointer bg-theme-surface border border-theme-border transition flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-black/40 border border-theme-accent/30 flex items-center justify-center text-theme-accent shrink-0">
                         <i data-lucide="globe" class="w-4 h-4"></i>
                     </div>
                     <div class="overflow-hidden">
@@ -173,21 +459,21 @@
         </div>
 
         <!-- Main Chat Area -->
-        <div id="chatSection" class="bg-[#101726] border border-slate-800 rounded-2xl flex flex-col h-full overflow-hidden shadow-2xl md:col-span-2 lg:col-span-3">
-            <div class="px-4 py-3 border-b border-slate-800 bg-[#0B0F17]/60 flex items-center justify-between shrink-0 gap-2">
+        <div id="chatSection" class="bg-theme-card border border-theme-border rounded-2xl flex flex-col h-full overflow-hidden shadow-2xl md:col-span-2 lg:col-span-3">
+            <div class="px-4 py-3 border-b border-theme-border bg-black/20 flex items-center justify-between shrink-0 gap-2">
                 <div class="flex items-center gap-2.5 overflow-hidden">
-                    <button id="mobileBackBtn" onclick="showMobileChatList()" class="md:hidden p-1.5 text-emerald-400 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 shrink-0 flex items-center gap-1 font-mono text-xs">
+                    <button id="mobileBackBtn" onclick="showMobileChatList()" class="md:hidden p-1.5 text-theme-accent bg-theme-surface rounded-lg border border-theme-border shrink-0 flex items-center gap-1 font-mono text-xs">
                         <i data-lucide="chevron-left" class="w-4 h-4"></i>
                         <span>Chats</span>
                     </button>
                     <span class="relative flex h-2.5 w-2.5 shrink-0">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-theme-accent opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-theme-accent"></span>
                     </span>
                     <h2 id="activeChatTitle" class="text-xs sm:text-sm font-mono font-semibold text-white uppercase tracking-wider truncate">Global Encrypted Channel</h2>
                 </div>
                 <div class="text-[10px] sm:text-[11px] font-mono text-slate-400 flex items-center gap-1 shrink-0">
-                    <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-theme-accent"></i>
                     <span class="hidden sm:inline">AES-256 Secured</span>
                 </div>
             </div>
@@ -195,23 +481,34 @@
             <!-- Messages Stream -->
             <div id="messagesContainer" class="flex-1 p-3 sm:p-6 overflow-y-auto space-y-4">
                 <div class="text-center py-12 text-slate-500 font-mono text-xs">
-                    <i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i>
+                    <i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-theme-accent"></i>
                     <span id="t-loadingMessages">Loading encrypted chat stream...</span>
                 </div>
             </div>
 
+            <!-- Image Preview Bar (When image attached) -->
+            <div id="attachedImagePreviewBar" class="hidden px-4 py-2 border-t border-theme-border bg-black/40 flex items-center justify-between text-xs font-mono">
+                <span class="text-theme-accent flex items-center gap-1.5">
+                    <i data-lucide="image" class="w-3.5 h-3.5"></i> Image Payload Attached
+                </span>
+                <button onclick="removeAttachedImage()" class="text-rose-400 hover:underline">Remove</button>
+            </div>
+
             <!-- Input Bar -->
-            <div class="p-2.5 sm:p-4 border-t border-slate-800 bg-[#0B0F17]/80 shrink-0">
+            <div class="p-2.5 sm:p-4 border-t border-theme-border bg-black/30 shrink-0">
                 <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex gap-2">
+                    <button type="button" onclick="toggleImageAttachModal(true)" title="Attach Encrypted Image" class="p-2.5 sm:p-3 bg-theme-surface hover:opacity-90 border border-theme-border text-theme-accent rounded-xl transition">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                    </button>
                     <input 
                         type="text" 
                         id="messageInput" 
                         placeholder="Type a secret message to encrypt and send..." 
-                        class="flex-1 bg-[#090D16] text-slate-100 placeholder-slate-500 rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm font-sans border border-slate-800 outline-none cipher-input transition"
+                        class="flex-1 bg-black/40 text-slate-100 placeholder-slate-500 rounded-xl px-3.5 py-2.5 sm:py-3 text-xs sm:text-sm font-sans border border-theme-border outline-none cipher-input transition"
                         autocomplete="off"
                         required
                     >
-                    <button type="submit" id="sendBtn" class="px-4 sm:px-5 py-2.5 sm:py-3 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-mono font-bold rounded-xl text-xs sm:text-sm transition flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 shrink-0">
+                    <button type="submit" id="sendBtn" class="px-4 sm:px-5 py-2.5 sm:py-3 bg-theme-accent hover:opacity-90 disabled:opacity-50 text-slate-950 font-mono font-bold rounded-xl text-xs sm:text-sm transition flex items-center gap-2 shadow-lg active:scale-95 shrink-0">
                         <i data-lucide="send" class="w-4 h-4"></i>
                         <span id="t-sendBtn" class="hidden sm:inline">Encrypt & Send</span>
                     </button>
@@ -222,10 +519,10 @@
 
     <!-- Group Settings Modal -->
     <div id="groupSettingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md hidden">
-        <div class="bg-[#111827] border border-slate-800 max-w-lg w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="bg-theme-card border border-theme-border max-w-lg w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-theme-border pb-3">
                 <h3 id="groupModalTitle" class="text-sm font-bold text-white font-mono flex items-center gap-2">
-                    <i data-lucide="users" class="w-4 h-4 text-emerald-400"></i> Group Settings
+                    <i data-lucide="users" class="w-4 h-4 text-theme-accent"></i> Group Settings
                 </h3>
                 <button onclick="toggleGroupSettingsModal(false)" class="text-slate-400 hover:text-white p-1">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -237,16 +534,16 @@
                 <div id="groupInviteSection" class="space-y-2">
                     <label class="text-xs font-mono text-slate-400 block uppercase">Invite New Member</label>
                     <div class="flex gap-2">
-                        <input type="email" id="inviteGroupEmailInput" placeholder="user@example.com" class="flex-1 bg-[#090D16] text-slate-100 placeholder-slate-600 rounded-xl px-3.5 py-2 text-xs font-mono border border-slate-800 outline-none cipher-input">
-                        <button onclick="inviteMemberToCurrentGroup()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs rounded-xl">Invite</button>
+                        <input type="text" id="inviteGroupEmailInput" placeholder="@username or user@example.com" class="flex-1 bg-black/40 text-slate-100 placeholder-slate-600 rounded-xl px-3.5 py-2 text-xs font-mono border border-theme-border outline-none cipher-input">
+                        <button onclick="inviteMemberToCurrentGroup()" class="px-4 py-2 bg-theme-accent text-slate-950 font-mono font-bold text-xs rounded-xl hover:opacity-90">Invite</button>
                     </div>
                 </div>
 
                 <!-- Admin Permissions Toggle -->
-                <div id="groupAdminControls" class="p-3 bg-[#090D16] border border-slate-800 rounded-xl space-y-2 hidden">
-                    <label class="text-xs font-mono text-emerald-400 block font-bold uppercase">Group Admin Controls</label>
+                <div id="groupAdminControls" class="p-3 bg-black/40 border border-theme-border rounded-xl space-y-2 hidden">
+                    <label class="text-xs font-mono text-theme-accent block font-bold uppercase">Group Admin Controls</label>
                     <label class="flex items-center gap-2 text-xs font-mono text-slate-300 cursor-pointer">
-                        <input type="checkbox" id="allowMemberInviteCheckbox" onchange="toggleGroupInvitePermission(this.checked)" class="accent-emerald-500 rounded">
+                        <input type="checkbox" id="allowMemberInviteCheckbox" onchange="toggleGroupInvitePermission(this.checked)" class="accent-theme-accent rounded">
                         <span>Allow normal members to invite new people</span>
                     </label>
                 </div>
@@ -259,7 +556,7 @@
             </div>
 
             <!-- Danger Zone Actions -->
-            <div class="border-t border-slate-800 pt-3 flex justify-between gap-2">
+            <div class="border-t border-theme-border pt-3 flex justify-between gap-2">
                 <button onclick="leaveCurrentGroup()" class="px-4 py-2 bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800 font-mono text-xs rounded-xl transition">Leave Group</button>
                 <button id="deleteGroupBtn" onclick="deleteCurrentGroup()" class="hidden px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-bold rounded-xl transition">Delete Group</button>
             </div>
@@ -268,48 +565,48 @@
 
     <!-- Admin User Modal -->
     <div id="adminModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md hidden">
-        <div class="bg-[#111827] border border-rose-900/60 max-w-2xl w-full rounded-2xl p-4 sm:p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="bg-theme-card border border-rose-900/60 max-w-2xl w-full rounded-2xl p-4 sm:p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-theme-border pb-3">
                 <h3 class="text-xs sm:text-sm font-bold text-white font-mono flex items-center gap-2 truncate">
-                    <i data-lucide="shield-alert" class="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 shrink-0"></i> Admin Management (<span class="text-emerald-400">ianyfeature@gmail.com</span>)
+                    <i data-lucide="shield-alert" class="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 shrink-0"></i> Admin Management (<span class="text-theme-accent">ianyfeature@gmail.com</span>)
                 </h3>
                 <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-white p-1">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <div id="adminUsersList" class="flex-1 overflow-y-auto space-y-2 pr-1"></div>
-            <div class="flex justify-end border-t border-slate-800 pt-3">
-                <button onclick="toggleAdminModal(false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono text-xs rounded-xl">Close</button>
+            <div class="flex justify-end border-t border-theme-border pt-3">
+                <button onclick="toggleAdminModal(false)" class="px-4 py-2 bg-theme-surface text-slate-300 font-mono text-xs rounded-xl">Close</button>
             </div>
         </div>
     </div>
 
     <!-- Add Friend Modal -->
     <div id="addFriendModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
-        <div class="bg-[#111827] border border-slate-800 max-w-md w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="bg-theme-card border border-theme-border max-w-md w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-theme-border pb-3">
                 <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
-                    <i data-lucide="user-plus" class="w-4 h-4 text-emerald-400"></i> Add Friend by Email
+                    <i data-lucide="user-plus" class="w-4 h-4 text-theme-accent"></i> Add Friend / Send DM Request
                 </h3>
                 <button onclick="toggleAddFriendModal(false)" class="text-slate-400 hover:text-white">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <div class="space-y-3">
-                <label class="text-xs text-slate-400 font-mono block">Friend's Email Address:</label>
-                <input type="email" id="friendEmailInput" placeholder="friend@example.com" class="w-full bg-[#090D16] text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-slate-800 outline-none cipher-input">
+                <label class="text-xs text-slate-400 font-mono block">Friend's Username (@handle) or Email:</label>
+                <input type="text" id="friendEmailInput" placeholder="@username or friend@example.com" class="w-full bg-black/40 text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-theme-border outline-none cipher-input">
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="toggleAddFriendModal(false)" class="px-4 py-2 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
-                <button onclick="addFriendByEmail()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold text-xs rounded-xl">Search & Start DM</button>
+                <button onclick="toggleAddFriendModal(false)" class="px-4 py-2 bg-theme-surface text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
+                <button onclick="addFriendByEmail()" class="px-4 py-2 bg-theme-accent text-slate-950 font-mono font-bold text-xs rounded-xl hover:opacity-90">Search & Connect</button>
             </div>
         </div>
     </div>
 
     <!-- Create Group Modal -->
     <div id="createGroupModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
-        <div class="bg-[#111827] border border-slate-800 max-w-md w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="bg-theme-card border border-theme-border max-w-md w-full rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-theme-border pb-3">
                 <h3 class="text-sm font-bold text-white font-mono flex items-center gap-2">
                     <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i> Create Group Chat
                 </h3>
@@ -320,21 +617,21 @@
             <div class="space-y-3">
                 <div>
                     <label class="text-xs text-slate-400 font-mono block mb-1">Group Name:</label>
-                    <input type="text" id="groupNameInput" placeholder="e.g. Secret Project X" class="w-full bg-[#090D16] text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-slate-800 outline-none cipher-input">
+                    <input type="text" id="groupNameInput" placeholder="e.g. Secret Project X" class="w-full bg-black/40 text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-theme-border outline-none cipher-input">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 font-mono block mb-1">Add Member Emails (comma-separated):</label>
-                    <input type="text" id="groupEmailsInput" placeholder="friend1@example.com, friend2@example.com" class="w-full bg-[#090D16] text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-slate-800 outline-none cipher-input">
+                    <label class="text-xs text-slate-400 font-mono block mb-1">Member Usernames or Emails (comma-separated):</label>
+                    <input type="text" id="groupEmailsInput" placeholder="@friend1, friend2@example.com" class="w-full bg-black/40 text-slate-100 placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-mono border border-theme-border outline-none cipher-input">
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="toggleCreateGroupModal(false)" class="px-4 py-2 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
+                <button onclick="toggleCreateGroupModal(false)" class="px-4 py-2 bg-theme-surface text-slate-300 font-mono text-xs rounded-xl">Cancel</button>
                 <button onclick="createGroupChat()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono font-bold text-xs rounded-xl">Create Group</button>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification Banner -->
+    <!-- Toast Banner -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border text-xs sm:text-sm font-mono backdrop-blur-lg">
         <span id="toastIcon"></span>
         <span id="toastMessage">Notification</span>
@@ -342,6 +639,7 @@
 
     <script>
         const ADMIN_EMAIL = "ianyfeature@gmail.com";
+        const BAD_WORDS_LIST = ["fuck", "shit", "bitch", "asshole", "crap", "bastard", "dick", "pussy", "nsfw", "porn"];
 
         const firebaseConfig = {
             apiKey: "AIzaSyC0F_bkm1uZWs0HOhgCtaXYmF9uyT6R1_o",
@@ -404,6 +702,25 @@
             return new TextDecoder().decode(decryptedBuffer);
         }
 
+        async function encryptPayload(text, imageUrl = null) {
+            const payload = JSON.stringify({ text: text || "", imageUrl: imageUrl || null });
+            return await encryptAES(payload);
+        }
+
+        async function decryptPayload(base64Payload) {
+            try {
+                const decryptedStr = await decryptAES(base64Payload);
+                try {
+                    const parsed = JSON.parse(decryptedStr);
+                    return { text: parsed.text || "", imageUrl: parsed.imageUrl || null };
+                } catch(e) {
+                    return { text: decryptedStr, imageUrl: null };
+                }
+            } catch(e) {
+                return { text: "[Decryption Error]", imageUrl: null };
+            }
+        }
+
         const I18N = {
             'en': {
                 sidebarTitle: "Chats & Friends",
@@ -415,7 +732,7 @@
                 toastLoginSuccess: "Successfully signed in with Google!",
                 toastLogout: "Signed out successfully.",
                 toastSent: "Message encrypted & sent!",
-                userNotFound: "User with this email does not exist.",
+                userNotFound: "User with this handle or email does not exist.",
                 dmCreated: "Direct Message channel opened!",
                 groupCreated: "Group chat created successfully!"
             },
@@ -429,7 +746,7 @@
                 toastLoginSuccess: "已成功透過 Google 登入！",
                 toastLogout: "已安全登出。",
                 toastSent: "訊息已加密並送出！",
-                userNotFound: "找不到此電子郵件對應的使用者。",
+                userNotFound: "找不到此帳號或電子郵件對應的使用者。",
                 dmCreated: "私人聊天室已開啟！",
                 groupCreated: "群組聊天已成功建立！"
             },
@@ -443,7 +760,7 @@
                 toastLoginSuccess: "已成功通过 Google 登录！",
                 toastLogout: "已安全登出。",
                 toastSent: "消息已加密并发送！",
-                userNotFound: "未找到该邮箱对应的用户。",
+                userNotFound: "未找到该账号或邮箱对应的用户。",
                 dmCreated: "私聊频道已开启！",
                 groupCreated: "群组聊天创建成功！"
             }
@@ -469,16 +786,437 @@
         }
 
         let currentUser = null;
+        let ghostUserData = null;
         let isUserBanned = false;
         let activeChatId = 'public';
         let activeChatType = 'public';
         let activeChatName = 'Global Encrypted Channel';
         let activeChatData = null;
         let currentMobileView = 'list';
+        let attachedImageUrl = null;
+
         let unsubscribeMessages = null;
         let unsubscribeUserChats = null;
-        let unsubscribeBanStatus = null;
+        let unsubscribeUserDoc = null;
+        let unsubscribeDMRequests = null;
         let unsubscribeUsersList = null;
+
+        function updateThemeClass(themeName) {
+            const body = document.getElementById('appBody');
+            body.className = `theme-${themeName || 'spooky'} bg-theme-base text-slate-200 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-black antialiased transition-colors duration-300`;
+        }
+
+        auth.onAuthStateChanged(async (user) => {
+            currentUser = user;
+            const loginBtn = document.getElementById('googleLoginBtn');
+            const userProfile = document.getElementById('userProfile');
+            const userSettingsBtn = document.getElementById('userSettingsBtn');
+            const adminBtn = document.getElementById('adminPanelBtn');
+
+            if (user) {
+                loginBtn.classList.add('hidden');
+                userProfile.classList.remove('hidden');
+                userProfile.classList.add('flex');
+                userSettingsBtn.classList.remove('hidden');
+
+                if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    adminBtn.classList.remove('hidden');
+                    adminBtn.classList.add('flex');
+                }
+
+                listenToUserProfile(user.uid);
+                loadUserChats();
+                listenToDMRequests(user.uid);
+            } else {
+                loginBtn.classList.remove('hidden');
+                userProfile.classList.add('hidden');
+                userSettingsBtn.classList.add('hidden');
+                adminBtn.classList.add('hidden');
+                document.getElementById('dmRequestsBtn').classList.add('hidden');
+                if (unsubscribeUserDoc) unsubscribeUserDoc();
+                if (unsubscribeUserChats) unsubscribeUserChats();
+                if (unsubscribeDMRequests) unsubscribeDMRequests();
+                setBannedState(false);
+            }
+        });
+
+        function listenToUserProfile(uid) {
+            if (unsubscribeUserDoc) unsubscribeUserDoc();
+            unsubscribeUserDoc = db.collection('users').doc(uid).onSnapshot((doc) => {
+                if (doc.exists) {
+                    ghostUserData = doc.data();
+                    document.getElementById('userAvatar').src = ghostUserData.photoURL || currentUser.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+                    document.getElementById('userName').textContent = ghostUserData.displayName || ghostUserData.username || currentUser.email;
+                    
+                    updateThemeClass(ghostUserData.theme);
+
+                    if (ghostUserData.isBanned === true) {
+                        setBannedState(true);
+                    } else {
+                        setBannedState(false);
+                    }
+
+                    if (!ghostUserData.username || ghostUserData.hasCompletedOnboarding === false) {
+                        document.getElementById('onboardingModal').classList.remove('hidden');
+                    } else {
+                        document.getElementById('onboardingModal').classList.add('hidden');
+                    }
+                } else {
+                    db.collection('users').doc(uid).set({
+                        uid: uid,
+                        email: currentUser.email.toLowerCase(),
+                        displayName: currentUser.displayName || 'Anonymous',
+                        photoURL: currentUser.photoURL || '',
+                        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                }
+            });
+        }
+
+        async function handleOnboardingSubmit(e) {
+            e.preventDefault();
+            const username = document.getElementById('obUsernameInput').value.trim().toLowerCase();
+            const displayName = document.getElementById('obDisplayNameInput').value.trim();
+            const theme = document.getElementById('obThemeSelect').value;
+            const bio = document.getElementById('obBioInput').value.trim();
+            const submitBtn = document.getElementById('obSubmitBtn');
+
+            submitBtn.disabled = true;
+
+            try {
+                const usernameDoc = await db.collection('usernames').doc(username).get();
+                if (usernameDoc.exists && usernameDoc.data().uid !== currentUser.uid) {
+                    showToast("Username @"+username+" is already taken!", "error");
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                const batch = db.batch();
+                batch.set(db.collection('usernames').doc(username), { uid: currentUser.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                batch.set(db.collection('users').doc(currentUser.uid), {
+                    username: username,
+                    displayName: displayName,
+                    theme: theme,
+                    bio: bio || "Decrypting reality...",
+                    photoURL: currentUser.photoURL || '',
+                    hasCompletedOnboarding: true,
+                    filterBadWords: true,
+                    allowPublicProfile: true,
+                    autoAcceptDM: false
+                }, { merge: true });
+
+                await batch.commit();
+                document.getElementById('onboardingModal').classList.add('hidden');
+                showToast("Identity configured successfully!", "success");
+            } catch (err) {
+                showToast("Setup failed: " + err.message, "error");
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+
+        function setBannedState(banned) {
+            isUserBanned = banned;
+            const overlay = document.getElementById('bannedOverlayScreen');
+            const msgInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+
+            if (banned) {
+                if (currentUser) document.getElementById('bannedUserEmail').textContent = currentUser.email;
+                overlay.classList.remove('hidden');
+                msgInput.disabled = true;
+                sendBtn.disabled = true;
+            } else {
+                overlay.classList.add('hidden');
+                msgInput.disabled = false;
+                sendBtn.disabled = false;
+            }
+        }
+
+        function loginWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).then(() => {
+                showToast(t('toastLoginSuccess'), 'success');
+            }).catch((err) => showToast("Login error: " + err.message, 'error'));
+        }
+
+        function logoutUser() {
+            auth.signOut().then(() => window.location.reload());
+        }
+
+        function openUserSettingsModal() {
+            if (!ghostUserData) return;
+            document.getElementById('setDisplayName').value = ghostUserData.displayName || '';
+            document.getElementById('setUsername').value = ghostUserData.username || '';
+            document.getElementById('setPhotoURL').value = ghostUserData.photoURL || '';
+            document.getElementById('setBio').value = ghostUserData.bio || '';
+            document.getElementById('setStatusMessage').value = ghostUserData.statusMessage || 'Online';
+            
+            const themeRadios = document.getElementsByName('themeRadio');
+            themeRadios.forEach(r => r.checked = (r.value === (ghostUserData.theme || 'spooky')));
+
+            document.getElementById('setFilterBadWords').checked = ghostUserData.filterBadWords !== false;
+            document.getElementById('setAllowPublicProfile').checked = ghostUserData.allowPublicProfile !== false;
+            document.getElementById('setAutoAcceptDM').checked = ghostUserData.autoAcceptDM === true;
+
+            switchSettingsTab('profile');
+            document.getElementById('userSettingsModal').classList.remove('hidden');
+        }
+
+        function toggleUserSettingsModal(show) {
+            document.getElementById('userSettingsModal').classList.toggle('hidden', !show);
+            if (!show && ghostUserData) updateThemeClass(ghostUserData.theme);
+        }
+
+        function switchSettingsTab(tab) {
+            ['profile', 'appearance', 'security'].forEach(tName => {
+                document.getElementById(`tabContent-${tName}`).classList.toggle('hidden', tName !== tab);
+                const btn = document.getElementById(`tabBtn-${tName}`);
+                if (tName === tab) {
+                    btn.className = "flex-1 py-2 text-center text-theme-accent border-b-2 border-theme-accent font-bold";
+                } else {
+                    btn.className = "flex-1 py-2 text-center text-slate-400 hover:text-white";
+                }
+            });
+        }
+
+        function previewTheme(tName) { updateThemeClass(tName); }
+
+        async function saveUserSettings() {
+            const newDisp = document.getElementById('setDisplayName').value.trim();
+            const newUn = document.getElementById('setUsername').value.trim().toLowerCase();
+            const newPhoto = document.getElementById('setPhotoURL').value.trim();
+            const newBio = document.getElementById('setBio').value.trim();
+            const newStatus = document.getElementById('setStatusMessage').value.trim();
+            
+            let selectedTheme = 'spooky';
+            document.getElementsByName('themeRadio').forEach(r => { if (r.checked) selectedTheme = r.value; });
+
+            const filterBadWords = document.getElementById('setFilterBadWords').checked;
+            const allowPublicProfile = document.getElementById('setAllowPublicProfile').checked;
+            const autoAcceptDM = document.getElementById('setAutoAcceptDM').checked;
+
+            if (!newUn) return showToast("Username cannot be empty", "error");
+
+            if (newUn !== ghostUserData.username) {
+                const unDoc = await db.collection('usernames').doc(newUn).get();
+                if (unDoc.exists && unDoc.data().uid !== currentUser.uid) {
+                    return showToast("Username @"+newUn+" is taken!", "error");
+                }
+                const batch = db.batch();
+                if (ghostUserData.username) batch.delete(db.collection('usernames').doc(ghostUserData.username));
+                batch.set(db.collection('usernames').doc(newUn), { uid: currentUser.uid });
+                await batch.commit();
+            }
+
+            await db.collection('users').doc(currentUser.uid).update({
+                displayName: newDisp,
+                username: newUn,
+                photoURL: newPhoto,
+                bio: newBio,
+                statusMessage: newStatus,
+                theme: selectedTheme,
+                filterBadWords: filterBadWords,
+                allowPublicProfile: allowPublicProfile,
+                autoAcceptDM: autoAcceptDM
+            });
+
+            toggleUserSettingsModal(false);
+            showToast("Settings updated successfully!", "success");
+        }
+
+        function openCurrentDiscordProfile() {
+            if (currentUser) openDiscordProfile(currentUser.uid);
+        }
+
+        async function openDiscordProfile(uid) {
+            if (!uid) return;
+            const userDoc = await db.collection('users').doc(uid).get();
+            if (!userDoc.exists) return;
+            const u = userDoc.data();
+
+            document.getElementById('profName').textContent = u.displayName || u.username;
+            document.getElementById('profHandle').textContent = `@${u.username || 'user'}`;
+            document.getElementById('profAvatar').src = u.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+            
+            const isSelf = currentUser && currentUser.uid === uid;
+            const canView = isSelf || (u.allowPublicProfile !== false);
+
+            if (canView) {
+                document.getElementById('profBio').textContent = u.bio || 'No bio written yet.';
+                document.getElementById('profPrivacyWarning').classList.add('hidden');
+            } else {
+                document.getElementById('profBio').textContent = '';
+                document.getElementById('profPrivacyWarning').classList.remove('hidden');
+            }
+
+            const dmBtn = document.getElementById('profDmBtn');
+            if (!isSelf) {
+                dmBtn.classList.remove('hidden');
+                dmBtn.onclick = () => {
+                    toggleDiscordProfile(false);
+                    initiateDM(u.username || u.email);
+                };
+            } else {
+                dmBtn.classList.add('hidden');
+            }
+
+            toggleDiscordProfile(true);
+        }
+
+        function toggleDiscordProfile(show) { document.getElementById('discordProfileModal').classList.toggle('hidden', !show); }
+
+        function listenToDMRequests(uid) {
+            if (unsubscribeDMRequests) unsubscribeDMRequests();
+            unsubscribeDMRequests = db.collection('dmRequests')
+                .where('toUid', '==', uid)
+                .where('status', '==', 'pending')
+                .onSnapshot(snapshot => {
+                    const count = snapshot.size;
+                    const btn = document.getElementById('dmRequestsBtn');
+                    const countSpan = document.getElementById('dmReqCount');
+                    if (count > 0) {
+                        btn.classList.remove('hidden');
+                        btn.classList.add('flex');
+                        countSpan.textContent = count;
+                    } else {
+                        btn.classList.add('hidden');
+                        btn.classList.remove('flex');
+                    }
+
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const req = doc.data();
+                        const reqId = doc.id;
+                        html += `
+                            <div class="p-3 bg-black/40 border border-theme-border rounded-xl flex items-center justify-between text-xs font-mono">
+                                <div class="flex items-center gap-2.5 overflow-hidden">
+                                    <img src="${req.fromPhoto || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-7 h-7 rounded-full border border-theme-border">
+                                    <div class="overflow-hidden">
+                                        <div class="text-white font-bold truncate">${escapeHtml(req.fromDisplayName)}</div>
+                                        <div class="text-[10px] text-theme-accent">@${escapeHtml(req.fromUsername)}</div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-1.5 shrink-0">
+                                    <button onclick="acceptDMRequest('${reqId}', '${req.fromUid}', '${escapeHtml(req.fromDisplayName)}')" class="px-2.5 py-1 bg-theme-accent text-slate-950 font-bold rounded-lg text-[10px]">Accept</button>
+                                    <button onclick="declineDMRequest('${reqId}')" class="px-2.5 py-1 bg-rose-950 text-rose-300 border border-rose-800 rounded-lg text-[10px]">Decline</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('dmRequestsList').innerHTML = html || `<div class="text-center py-6 text-slate-500 font-mono text-xs">No pending requests.</div>`;
+                });
+        }
+
+        function openDMRequestsModal() { document.getElementById('dmRequestsModal').classList.remove('hidden'); }
+        function toggleDMRequestsModal(show) { document.getElementById('dmRequestsModal').classList.toggle('hidden', !show); }
+
+        async function acceptDMRequest(reqId, fromUid, fromDisplayName) {
+            const sortedUids = [currentUser.uid, fromUid].sort();
+            const chatId = sortedUids.join('_');
+
+            await db.collection('chats').doc(chatId).set({
+                type: 'dm',
+                participants: sortedUids,
+                peerName: fromDisplayName,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            await db.collection('dmRequests').doc(reqId).update({ status: 'accepted' });
+            showToast("DM accepted!", "success");
+            switchChat(chatId, fromDisplayName, 'dm');
+        }
+
+        async function declineDMRequest(reqId) {
+            await db.collection('dmRequests').doc(reqId).update({ status: 'declined' });
+            showToast("DM request declined.", "info");
+        }
+
+        async function initiateDM(targetQuery) {
+            if (!currentUser) return showToast(t('authRequired'), 'warning');
+            const clean = targetQuery.trim().toLowerCase().replace('@', '');
+            if (!clean) return;
+
+            const isEmail = targetQuery.includes('@') && !targetQuery.startsWith('@');
+            const query = isEmail ? db.collection('users').where('email', '==', clean)
+                                  : db.collection('users').where('username', '==', clean);
+
+            const snapshot = await query.get();
+            if (snapshot.empty) return showToast(t('userNotFound'), 'error');
+
+            const peerData = snapshot.docs[0].data();
+            const peerUid = peerData.uid;
+            const peerName = peerData.displayName || peerData.username;
+
+            if (peerUid === currentUser.uid) return showToast("You cannot DM yourself.", "warning");
+
+            if (peerData.autoAcceptDM === true) {
+                const chatId = [currentUser.uid, peerUid].sort().join('_');
+                await db.collection('chats').doc(chatId).set({
+                    type: 'dm',
+                    participants: [currentUser.uid, peerUid],
+                    peerName: peerName,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                showToast("DM connected!", "success");
+                switchChat(chatId, peerName, 'dm');
+            } else {
+                const reqId = `${currentUser.uid}_${peerUid}`;
+                await db.collection('dmRequests').doc(reqId).set({
+                    fromUid: currentUser.uid,
+                    fromUsername: ghostUserData?.username || '',
+                    fromDisplayName: ghostUserData?.displayName || 'Anonymous',
+                    fromPhoto: ghostUserData?.photoURL || '',
+                    toUid: peerUid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'pending'
+                }, { merge: true });
+                showToast("DM request sent for user approval.", "info");
+            }
+        }
+
+        function toggleImageAttachModal(show) { document.getElementById('imageAttachModal').classList.toggle('hidden', !show); }
+        function confirmAttachImage() {
+            const url = document.getElementById('imageUrlInput').value.trim();
+            if (!url) return;
+            attachedImageUrl = url;
+            document.getElementById('attachedImagePreviewBar').classList.remove('hidden');
+            document.getElementById('imageUrlInput').value = '';
+            toggleImageAttachModal(false);
+            showToast("Image attached to next message!", "info");
+        }
+        function removeAttachedImage() {
+            attachedImageUrl = null;
+            document.getElementById('attachedImagePreviewBar').classList.add('hidden');
+        }
+
+        function switchChat(chatId, chatName, chatType, chatData = null) {
+            activeChatId = chatId;
+            activeChatName = chatName;
+            activeChatType = chatType;
+            activeChatData = chatData;
+
+            document.getElementById('activeChatTitle').textContent = chatName;
+            const groupSettingsBtn = document.getElementById('groupSettingsBtn');
+            if (chatType === 'group') {
+                groupSettingsBtn.classList.remove('hidden');
+                groupSettingsBtn.classList.add('flex');
+            } else {
+                groupSettingsBtn.classList.add('hidden');
+                groupSettingsBtn.classList.remove('flex');
+            }
+
+            document.querySelectorAll('.chat-tab-item').forEach(el => el.classList.remove('border-theme-accent', 'bg-theme-surface'));
+            const activeEl = document.getElementById(`chat-item-${chatId}`);
+            if (activeEl) activeEl.classList.add('border-theme-accent', 'bg-theme-surface');
+
+            initChatListener();
+
+            if (window.innerWidth < 768) {
+                currentMobileView = 'chat';
+                updateResponsiveViews();
+            }
+        }
 
         function updateResponsiveViews() {
             const isMobile = window.innerWidth < 768;
@@ -504,191 +1242,6 @@
         function showMobileChatList() {
             currentMobileView = 'list';
             updateResponsiveViews();
-        }
-
-        auth.onAuthStateChanged(async (user) => {
-            currentUser = user;
-            const loginBtn = document.getElementById('googleLoginBtn');
-            const userProfile = document.getElementById('userProfile');
-            const adminBtn = document.getElementById('adminPanelBtn');
-
-            if (user) {
-                loginBtn.classList.add('hidden');
-                userProfile.classList.remove('hidden');
-                userProfile.classList.add('flex');
-                document.getElementById('userAvatar').src = user.photoURL || '';
-                document.getElementById('userName').textContent = user.displayName || user.email;
-
-                if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                    adminBtn.classList.remove('hidden');
-                    adminBtn.classList.add('flex');
-                } else {
-                    adminBtn.classList.add('hidden');
-                    adminBtn.classList.remove('flex');
-                }
-
-                await db.collection('users').doc(user.uid).set({
-                    uid: user.uid,
-                    email: user.email.toLowerCase(),
-                    displayName: user.displayName || 'Anonymous',
-                    photoURL: user.photoURL || '',
-                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-
-                listenToUserBanStatus(user.uid);
-                loadUserChats();
-            } else {
-                loginBtn.classList.remove('hidden');
-                userProfile.classList.add('hidden');
-                userProfile.classList.remove('flex');
-                adminBtn.classList.add('hidden');
-                adminBtn.classList.remove('flex');
-                if (unsubscribeBanStatus) unsubscribeBanStatus();
-                if (unsubscribeUserChats) unsubscribeUserChats();
-                setBannedState(false);
-            }
-        });
-
-        function listenToUserBanStatus(uid) {
-            if (unsubscribeBanStatus) unsubscribeBanStatus();
-            unsubscribeBanStatus = db.collection('users').doc(uid).onSnapshot((doc) => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    const banned = data.isBanned === true;
-                    setBannedState(banned);
-                }
-            });
-        }
-
-        function setBannedState(banned) {
-            isUserBanned = banned;
-            const overlay = document.getElementById('bannedOverlayScreen');
-            const bannedEmailSpan = document.getElementById('bannedUserEmail');
-            const msgInput = document.getElementById('messageInput');
-            const sendBtn = document.getElementById('sendBtn');
-
-            if (banned) {
-                if (currentUser) bannedEmailSpan.textContent = currentUser.email;
-                overlay.classList.remove('hidden');
-                msgInput.disabled = true;
-                sendBtn.disabled = true;
-            } else {
-                overlay.classList.add('hidden');
-                msgInput.disabled = false;
-                sendBtn.disabled = false;
-            }
-            lucide.createIcons();
-        }
-
-        function loginWithGoogle() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(() => {
-                showToast(t('toastLoginSuccess'), 'success');
-            }).catch((err) => showToast("Login error: " + err.message, 'error'));
-        }
-
-        function logoutUser() {
-            auth.signOut().then(() => {
-                window.location.reload();
-            }).catch((err) => {
-                console.error("Logout error:", err);
-                window.location.reload();
-            });
-        }
-
-        function toggleAdminModal(show) {
-            const modal = document.getElementById('adminModal');
-            modal.classList.toggle('hidden', !show);
-            if (show) listenToAllUsers();
-            else if (unsubscribeUsersList) unsubscribeUsersList();
-        }
-        function openAdminModal() { toggleAdminModal(true); }
-
-        function listenToAllUsers() {
-            const container = document.getElementById('adminUsersList');
-            if (unsubscribeUsersList) unsubscribeUsersList();
-
-            unsubscribeUsersList = db.collection('users').onSnapshot((snapshot) => {
-                if (snapshot.empty) {
-                    container.innerHTML = `<div class="text-center py-8 text-slate-500 font-mono text-xs">No registered users found.</div>`;
-                    return;
-                }
-
-                let html = '';
-                snapshot.forEach((doc) => {
-                    const u = doc.data();
-                    const isBanned = u.isBanned === true;
-                    const isAdmin = u.email === ADMIN_EMAIL;
-
-                    html += `
-                        <div class="p-3 bg-[#090D16] border border-slate-800 rounded-xl flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-3 overflow-hidden">
-                                <img src="${u.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-8 h-8 rounded-full border border-slate-700 shrink-0">
-                                <div class="overflow-hidden">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xs font-mono font-bold text-white truncate">${escapeHtml(u.displayName || 'Anonymous')}</span>
-                                        ${isAdmin ? `<span class="text-[9px] font-mono px-1.5 py-0.5 bg-rose-950 text-rose-400 border border-rose-800 rounded">ADMIN</span>` : ''}
-                                        ${isBanned ? `<span class="text-[9px] font-mono px-1.5 py-0.5 bg-rose-900/60 text-rose-300 border border-rose-700 rounded">BANNED</span>` : `<span class="text-[9px] font-mono px-1.5 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded">ACTIVE</span>`}
-                                    </div>
-                                    <p class="text-[10px] font-mono text-slate-400 truncate">${escapeHtml(u.email || '')}</p>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                ${isAdmin ? '' : `
-                                    <button onclick="toggleUserBan('${u.uid}', ${!isBanned})" class="px-3 py-1.5 ${isBanned ? 'bg-emerald-600 hover:bg-emerald-500 text-slate-950' : 'bg-rose-600 hover:bg-rose-500 text-white'} font-mono text-xs font-bold rounded-lg transition active:scale-95 shrink-0">
-                                        ${isBanned ? 'Unban' : 'Ban'}
-                                    </button>
-                                `}
-                            </div>
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
-                lucide.createIcons();
-            });
-        }
-
-        async function toggleUserBan(targetUid, banStatus) {
-            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
-            try {
-                await db.collection('users').doc(targetUid).update({
-                    isBanned: banStatus,
-                    bannedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showToast(banStatus ? "User banned successfully!" : "User unbanned successfully!", banStatus ? "warning" : "success");
-            } catch (err) {
-                showToast("Failed to update user ban status: " + err.message, "error");
-            }
-        }
-
-        function switchChat(chatId, chatName, chatType, chatData = null) {
-            activeChatId = chatId;
-            activeChatName = chatName;
-            activeChatType = chatType;
-            activeChatData = chatData;
-
-            document.getElementById('activeChatTitle').textContent = chatName;
-            const groupSettingsBtn = document.getElementById('groupSettingsBtn');
-            if (chatType === 'group') {
-                groupSettingsBtn.classList.remove('hidden');
-                groupSettingsBtn.classList.add('flex');
-            } else {
-                groupSettingsBtn.classList.add('hidden');
-                groupSettingsBtn.classList.remove('flex');
-            }
-
-            document.querySelectorAll('.chat-tab-item').forEach(el => el.classList.remove('border-emerald-500', 'bg-slate-800'));
-            const activeEl = document.getElementById(`chat-item-${chatId}`);
-            if (activeEl) activeEl.classList.add('border-emerald-500', 'bg-slate-800');
-
-            initChatListener();
-
-            if (window.innerWidth < 768) {
-                currentMobileView = 'chat';
-                updateResponsiveViews();
-            }
         }
 
         function loadUserChats() {
@@ -723,17 +1276,16 @@
                     }
 
                     const icon = isGroup ? 'users' : 'user';
-                    const adminBadge = isAdmin ? `<span class="text-[8px] font-mono bg-rose-950 text-rose-400 border border-rose-800 px-1 rounded ml-1">ADMIN</span>` : '';
 
                     html += `
-                        <div onclick="switchChat('${chatId}', '${escapeHtml(chatName)}', '${chat.type}', ${JSON.stringify(chat).replace(/"/g, '&quot;')})" id="chat-item-${chatId}" class="chat-tab-item p-2.5 rounded-xl cursor-pointer hover:bg-slate-800/60 border border-transparent transition flex items-center justify-between gap-2">
+                        <div onclick="switchChat('${chatId}', '${escapeHtml(chatName)}', '${chat.type}', ${JSON.stringify(chat).replace(/"/g, '&quot;')})" id="chat-item-${chatId}" class="chat-tab-item p-2.5 rounded-xl cursor-pointer hover:bg-theme-surface/60 border border-transparent transition flex items-center justify-between gap-2">
                             <div class="flex items-center gap-3 overflow-hidden">
-                                <div class="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
-                                    <i data-lucide="${icon}" class="w-4 h-4 text-emerald-400"></i>
+                                <div class="w-8 h-8 rounded-xl bg-black/40 border border-theme-border flex items-center justify-center text-slate-300 shrink-0">
+                                    <i data-lucide="${icon}" class="w-4 h-4 text-theme-accent"></i>
                                 </div>
                                 <div class="overflow-hidden">
                                     <h4 class="text-xs font-mono font-semibold text-white truncate flex items-center">
-                                        ${escapeHtml(chatName)} ${adminBadge}
+                                        ${escapeHtml(chatName)}
                                     </h4>
                                     <p class="text-[10px] text-slate-400 truncate uppercase">${chat.type} · ${chat.participants ? chat.participants.length : 0} members</p>
                                 </div>
@@ -754,29 +1306,178 @@
 
         async function removeDMChannel(e, chatId) {
             e.stopPropagation();
-            if (!confirm("Are you sure you want to remove this conversation?")) return;
-            try {
-                await db.collection('chats').doc(chatId).delete();
-                if (activeChatId === chatId) {
-                    switchChat('public', 'Global Encrypted Channel', 'public');
-                }
-                showToast("DM conversation removed.", "info");
-            } catch (err) {
-                showToast("Failed to remove DM: " + err.message, "error");
-            }
+            if (!confirm("Remove this conversation?")) return;
+            await db.collection('chats').doc(chatId).delete();
+            if (activeChatId === chatId) switchChat('public', 'Global Encrypted Channel', 'public');
+            showToast("DM conversation removed.", "info");
         }
 
-        async function deleteChatMessage(msgId) {
+        async function handleSendMessage(e) {
+            e.preventDefault();
+            if (!currentUser) { showToast(t('authRequired'), 'warning'); loginWithGoogle(); return; }
+            if (isUserBanned) return showToast("Account banned.", "error");
+
+            const input = document.getElementById('messageInput');
+            const plainText = input.value.trim();
+            const imgUrl = attachedImageUrl;
+
+            if (!plainText && !imgUrl) return;
+
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+
             try {
+                const ciphertext = await encryptPayload(plainText, imgUrl);
+
+                const payload = {
+                    ciphertext: ciphertext,
+                    senderName: ghostUserData?.displayName || currentUser.displayName || 'Anonymous',
+                    senderUsername: ghostUserData?.username || '',
+                    senderEmail: currentUser.email || '',
+                    senderPhoto: ghostUserData?.photoURL || currentUser.photoURL || '',
+                    senderId: currentUser.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    isDeleted: false
+                };
+
                 const targetCollection = activeChatType === 'public'
                     ? db.collection('artifacts').doc('ghostchat-f5452').collection('public').doc('data').collection('messages')
                     : db.collection('chats').doc(activeChatId).collection('messages');
 
-                await targetCollection.doc(msgId).update({ isDeleted: true });
-                showToast("Message deleted.", "info");
+                await targetCollection.add(payload);
+
+                input.value = '';
+                removeAttachedImage();
+                showToast(t('toastSent'), 'success');
             } catch (err) {
-                showToast("Failed to delete message: " + err.message, "error");
+                showToast("Failed to send: " + err.message, 'error');
+            } finally {
+                sendBtn.disabled = isUserBanned;
             }
+        }
+
+        function initChatListener() {
+            const container = document.getElementById('messagesContainer');
+            if (unsubscribeMessages) unsubscribeMessages();
+
+            const query = activeChatType === 'public'
+                ? db.collection('artifacts').doc('ghostchat-f5452').collection('public').doc('data').collection('messages').orderBy('timestamp', 'asc')
+                : db.collection('chats').doc(activeChatId).collection('messages').orderBy('timestamp', 'asc');
+
+            unsubscribeMessages = query.onSnapshot(async (snapshot) => {
+                if (snapshot.empty) {
+                    container.innerHTML = `<div class="text-center py-12 text-slate-500 font-mono text-xs">No messages here yet. Start talking!</div>`;
+                    return;
+                }
+
+                const isGlobalAdmin = currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+                const msgPromises = snapshot.docs.map(async (doc) => {
+                    const msg = doc.data();
+                    let text = "", imageUrl = null;
+                    if (msg.isDeleted === true) {
+                        text = "🚫 Message deleted";
+                    } else {
+                        const payload = await decryptPayload(msg.ciphertext);
+                        text = payload.text;
+                        imageUrl = payload.imageUrl;
+                    }
+
+                    const words = text.toLowerCase().split(/\s+/);
+                    const containsBadWords = BAD_WORDS_LIST.some(w => words.includes(w));
+
+                    return { id: doc.id, ...msg, decryptedText: text, decryptedImageUrl: imageUrl, containsBadWords };
+                });
+
+                const messages = await Promise.all(msgPromises);
+                const filterEnabled = ghostUserData?.filterBadWords !== false;
+
+                let html = '';
+                messages.forEach((msg) => {
+                    const timeStr = msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+                    const isSender = currentUser && (msg.senderId === currentUser.uid || msg.senderEmail === currentUser.email);
+                    const canDelete = !msg.isDeleted && (isSender || isGlobalAdmin);
+
+                    html += `
+                        <div class="flex items-start gap-2.5 ${isSender ? 'flex-row-reverse' : ''}">
+                            <img src="${msg.senderPhoto || 'https://www.gravatar.com/avatar/?d=mp'}" onclick="openDiscordProfile('${msg.senderId}')" class="w-7 h-7 rounded-full border border-theme-accent/40 cursor-pointer shrink-0 mt-0.5">
+                            <div class="flex flex-col ${isSender ? 'items-end' : 'items-start'} max-w-xl">
+                                <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400 mb-1">
+                                    <span class="text-white font-bold cursor-pointer" onclick="openDiscordProfile('${msg.senderId}')">${escapeHtml(msg.senderName)}</span>
+                                    ${msg.senderUsername ? `<span class="text-theme-accent">@${escapeHtml(msg.senderUsername)}</span>` : ''}
+                                    <span>${timeStr}</span>
+                                    ${canDelete ? `<button onclick="deleteChatMessage('${msg.id}')" title="Delete" class="hover:text-rose-400 text-slate-500"><i data-lucide="trash" class="w-3 h-3"></i></button>` : ''}
+                                </div>
+                                <div class="bg-black/40 border border-theme-border rounded-2xl p-3 shadow-md space-y-2">
+                                    ${filterEnabled && msg.containsBadWords ? `
+                                        <div class="text-xs font-mono text-amber-400 bg-amber-950/40 p-2 rounded-xl border border-amber-800/40">
+                                            ⚠️ Message flagged: Contains restricted bad words or NSFW content.
+                                        </div>
+                                    ` : `
+                                        ${msg.decryptedImageUrl ? `<img src="${escapeHtml(msg.decryptedImageUrl)}" class="max-h-60 rounded-xl object-contain border border-theme-border">` : ''}
+                                        ${msg.decryptedText ? `<div class="text-xs sm:text-sm font-sans ${msg.isDeleted ? 'text-slate-500 italic' : 'text-slate-100'} whitespace-pre-wrap leading-relaxed">${escapeHtml(msg.decryptedText)}</div>` : ''}
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                container.scrollTop = container.scrollHeight;
+                lucide.createIcons();
+            });
+        }
+
+        async function deleteChatMessage(msgId) {
+            const targetCollection = activeChatType === 'public'
+                ? db.collection('artifacts').doc('ghostchat-f5452').collection('public').doc('data').collection('messages')
+                : db.collection('chats').doc(activeChatId).collection('messages');
+            await targetCollection.doc(msgId).update({ isDeleted: true });
+            showToast("Message deleted.", "info");
+        }
+
+        function openAddFriendModal() { toggleAddFriendModal(true); }
+        function toggleAddFriendModal(show) { document.getElementById('addFriendModal').classList.toggle('hidden', !show); }
+        function addFriendByEmail() {
+            const q = document.getElementById('friendEmailInput').value.trim();
+            if (q) {
+                initiateDM(q);
+                toggleAddFriendModal(false);
+                document.getElementById('friendEmailInput').value = '';
+            }
+        }
+
+        function openCreateGroupModal() { toggleCreateGroupModal(true); }
+        function toggleCreateGroupModal(show) { document.getElementById('createGroupModal').classList.toggle('hidden', !show); }
+        async function createGroupChat() {
+            const name = document.getElementById('groupNameInput').value.trim();
+            const inputsStr = document.getElementById('groupEmailsInput').value.trim();
+            if (!name) return showToast("Group name required.", "warning");
+
+            const inputs = inputsStr.split(',').map(s => s.trim().toLowerCase().replace('@', '')).filter(s => s);
+            const participants = [currentUser.uid];
+
+            for (const item of inputs) {
+                const isEmail = item.includes('@');
+                const q = isEmail ? db.collection('users').where('email', '==', item) : db.collection('users').where('username', '==', item);
+                const snapshot = await q.get();
+                if (!snapshot.empty) participants.push(snapshot.docs[0].data().uid);
+            }
+
+            const ref = await db.collection('chats').add({
+                type: 'group',
+                name: name,
+                participants: Array.from(new Set(participants)),
+                admins: [currentUser.uid],
+                createdBy: currentUser.uid,
+                allowMemberInvite: true,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            toggleCreateGroupModal(false);
+            showToast("Group chat created!", "success");
+            switchChat(ref.id, name, 'group');
         }
 
         async function openGroupSettingsModal() {
@@ -791,31 +1492,22 @@
 
             const isGlobalAdmin = currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
             const isGroupAdmin = isGlobalAdmin || (activeChatData.admins && activeChatData.admins.includes(currentUser.uid)) || activeChatData.createdBy === currentUser.uid;
-            const allowInvite = isGroupAdmin || (activeChatData.allowMemberInvite !== false);
 
-            document.getElementById('groupInviteSection').classList.toggle('hidden', !allowInvite);
-            
-            const adminControls = document.getElementById('groupAdminControls');
-            adminControls.classList.toggle('hidden', !isGroupAdmin);
+            document.getElementById('groupAdminControls').classList.toggle('hidden', !isGroupAdmin);
             document.getElementById('allowMemberInviteCheckbox').checked = activeChatData.allowMemberInvite !== false;
-
             document.getElementById('deleteGroupBtn').classList.toggle('hidden', !isGroupAdmin);
 
-            const membersContainer = document.getElementById('groupMembersList');
             let membersHtml = '';
-            
             for (const uid of (activeChatData.participants || [])) {
                 let userDisp = uid;
-                let userDoc = await db.collection('users').doc(uid).get();
-                if (userDoc.exists) {
-                    userDisp = `${userDoc.data().displayName} (${userDoc.data().email})`;
-                }
+                const userDoc = await db.collection('users').doc(uid).get();
+                if (userDoc.exists) userDisp = `${userDoc.data().displayName} (@${userDoc.data().username || 'user'})`;
 
                 const memberIsAdmin = (activeChatData.admins && activeChatData.admins.includes(uid)) || activeChatData.createdBy === uid;
 
                 membersHtml += `
-                    <div class="p-2 bg-[#090D16] border border-slate-800 rounded-lg flex items-center justify-between text-xs font-mono">
-                        <span class="text-slate-200 truncate max-w-[200px]">${escapeHtml(userDisp)} ${memberIsAdmin ? '<span class="text-[9px] text-emerald-400 bg-emerald-950 px-1 py-0.5 rounded border border-emerald-800">ADMIN</span>' : ''}</span>
+                    <div class="p-2 bg-black/40 border border-theme-border rounded-lg flex items-center justify-between text-xs font-mono">
+                        <span class="text-slate-200 truncate max-w-[200px]">${escapeHtml(userDisp)} ${memberIsAdmin ? '<span class="text-[9px] text-theme-accent bg-black px-1 rounded border border-theme-border">ADMIN</span>' : ''}</span>
                         ${isGroupAdmin && uid !== currentUser.uid ? `
                             <button onclick="toggleGroupAdminStatus('${uid}', ${!memberIsAdmin})" class="text-[10px] text-cyan-400 hover:underline">
                                 ${memberIsAdmin ? 'Demote' : 'Make Admin'}
@@ -824,283 +1516,95 @@
                     </div>
                 `;
             }
-            membersContainer.innerHTML = membersHtml;
+            document.getElementById('groupMembersList').innerHTML = membersHtml;
         }
 
-        function toggleGroupSettingsModal(show) {
-            document.getElementById('groupSettingsModal').classList.toggle('hidden', !show);
-        }
+        function toggleGroupSettingsModal(show) { document.getElementById('groupSettingsModal').classList.toggle('hidden', !show); }
 
         async function inviteMemberToCurrentGroup() {
-            const input = document.getElementById('inviteGroupEmailInput');
-            const email = input.value.trim().toLowerCase();
-            if (!email) return;
+            const val = document.getElementById('inviteGroupEmailInput').value.trim().toLowerCase().replace('@', '');
+            if (!val) return;
+            const isEmail = val.includes('@');
+            const q = isEmail ? db.collection('users').where('email', '==', val) : db.collection('users').where('username', '==', val);
+            const snapshot = await q.get();
+            if (snapshot.empty) return showToast("User not found.", "error");
 
-            try {
-                const userQ = await db.collection('users').where('email', '==', email).get();
-                if (userQ.empty) { showToast("User email not found.", "error"); return; }
-                const newUid = userQ.docs[0].data().uid;
-
-                await db.collection('chats').doc(activeChatId).update({
-                    participants: firebase.firestore.FieldValue.arrayUnion(newUid)
-                });
-
-                input.value = '';
-                showToast("User invited into group!", "success");
-                openGroupSettingsModal();
-            } catch (err) {
-                showToast("Failed to invite: " + err.message, "error");
-            }
+            const newUid = snapshot.docs[0].data().uid;
+            await db.collection('chats').doc(activeChatId).update({ participants: firebase.firestore.FieldValue.arrayUnion(newUid) });
+            document.getElementById('inviteGroupEmailInput').value = '';
+            showToast("Member invited!", "success");
+            openGroupSettingsModal();
         }
 
         async function toggleGroupAdminStatus(targetUid, makeAdmin) {
-            try {
-                const action = makeAdmin ? firebase.firestore.FieldValue.arrayUnion(targetUid) : firebase.firestore.FieldValue.arrayRemove(targetUid);
-                await db.collection('chats').doc(activeChatId).update({ admins: action });
-                showToast(makeAdmin ? "Promoted to Group Admin" : "Demoted Group Admin", "success");
-                openGroupSettingsModal();
-            } catch (err) {
-                showToast("Failed to update status: " + err.message, "error");
-            }
+            const action = makeAdmin ? firebase.firestore.FieldValue.arrayUnion(targetUid) : firebase.firestore.FieldValue.arrayRemove(targetUid);
+            await db.collection('chats').doc(activeChatId).update({ admins: action });
+            openGroupSettingsModal();
         }
 
         async function toggleGroupInvitePermission(allow) {
-            try {
-                await db.collection('chats').doc(activeChatId).update({ allowMemberInvite: allow });
-                showToast("Permission settings saved.", "success");
-            } catch (err) {
-                showToast("Failed to save setting: " + err.message, "error");
-            }
+            await db.collection('chats').doc(activeChatId).update({ allowMemberInvite: allow });
         }
 
         async function leaveCurrentGroup() {
-            if (!confirm("Are you sure you want to leave this group?")) return;
-            try {
-                await db.collection('chats').doc(activeChatId).update({
-                    participants: firebase.firestore.FieldValue.arrayRemove(currentUser.uid),
-                    admins: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
-                });
-                toggleGroupSettingsModal(false);
-                switchChat('public', 'Global Encrypted Channel', 'public');
-                showToast("You left the group.", "info");
-            } catch (err) {
-                showToast("Failed to leave group: " + err.message, "error");
-            }
+            if (!confirm("Leave this group?")) return;
+            await db.collection('chats').doc(activeChatId).update({
+                participants: firebase.firestore.FieldValue.arrayRemove(currentUser.uid),
+                admins: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+            });
+            toggleGroupSettingsModal(false);
+            switchChat('public', 'Global Encrypted Channel', 'public');
         }
 
         async function deleteCurrentGroup() {
-            if (!confirm("Are you sure you want to delete this entire group for everyone?")) return;
-            try {
-                await db.collection('chats').doc(activeChatId).delete();
-                toggleGroupSettingsModal(false);
-                switchChat('public', 'Global Encrypted Channel', 'public');
-                showToast("Group deleted successfully.", "info");
-            } catch (err) {
-                showToast("Failed to delete group: " + err.message, "error");
-            }
+            if (!confirm("Delete this group?")) return;
+            await db.collection('chats').doc(activeChatId).delete();
+            toggleGroupSettingsModal(false);
+            switchChat('public', 'Global Encrypted Channel', 'public');
         }
 
-        async function addFriendByEmail() {
-            if (!currentUser) { showToast(t('authRequired'), 'warning'); return; }
-            if (isUserBanned) { showToast("Banned accounts cannot add friends.", "error"); return; }
-            const emailInput = document.getElementById('friendEmailInput');
-            const targetEmail = emailInput.value.trim().toLowerCase();
-            if (!targetEmail) return;
-
-            if (targetEmail === currentUser.email.toLowerCase()) {
-                showToast("You cannot add yourself as a friend.", "warning");
-                return;
-            }
-
-            try {
-                const querySnapshot = await db.collection('users').where('email', '==', targetEmail).get();
-                if (querySnapshot.empty) {
-                    showToast(t('userNotFound'), 'error');
-                    return;
-                }
-
-                const peerDoc = querySnapshot.docs[0].data();
-                const peerUid = peerDoc.uid;
-                const peerName = peerDoc.displayName;
-
-                const chatId = [currentUser.uid, peerUid].sort().join('_');
-
-                await db.collection('chats').doc(chatId).set({
-                    type: 'dm',
-                    participants: [currentUser.uid, peerUid],
-                    peerName: peerName,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-
-                toggleAddFriendModal(false);
-                emailInput.value = '';
-                showToast(t('dmCreated'), 'success');
-                switchChat(chatId, peerName, 'dm');
-            } catch (err) {
-                console.error("Add friend error:", err);
-                showToast("Error adding friend: " + err.message, 'error');
-            }
+        function openAdminModal() {
+            toggleAdminModal(true);
+            listenToAllUsers();
         }
+        function toggleAdminModal(show) { document.getElementById('adminModal').classList.toggle('hidden', !show); }
 
-        async function createGroupChat() {
-            if (!currentUser) { showToast(t('authRequired'), 'warning'); return; }
-            if (isUserBanned) { showToast("Banned accounts cannot create group chats.", "error"); return; }
-            const groupName = document.getElementById('groupNameInput').value.trim();
-            const emailsStr = document.getElementById('groupEmailsInput').value.trim();
-            if (!groupName) { showToast("Please enter a group name.", "warning"); return; }
-
-            const emails = emailsStr.split(',').map(e => e.trim().toLowerCase()).filter(e => e);
-            const participants = [currentUser.uid];
-
-            try {
-                for (const email of emails) {
-                    const q = await db.collection('users').where('email', '==', email).get();
-                    if (!q.empty) {
-                        participants.push(q.docs[0].data().uid);
-                    }
-                }
-
-                const groupRef = await db.collection('chats').add({
-                    type: 'group',
-                    name: groupName,
-                    participants: participants,
-                    admins: [currentUser.uid],
-                    createdBy: currentUser.uid,
-                    allowMemberInvite: true,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                toggleCreateGroupModal(false);
-                document.getElementById('groupNameInput').value = '';
-                document.getElementById('groupEmailsInput').value = '';
-                showToast(t('groupCreated'), 'success');
-                switchChat(groupRef.id, groupName, 'group');
-            } catch (err) {
-                console.error("Create group error:", err);
-                showToast("Error creating group: " + err.message, 'error');
-            }
-        }
-
-        async function handleSendMessage(e) {
-            e.preventDefault();
-            if (!currentUser) { showToast(t('authRequired'), 'warning'); loginWithGoogle(); return; }
-            if (isUserBanned) { showToast("Your account is banned from sending messages.", "error"); return; }
-
-            const input = document.getElementById('messageInput');
-            const plainText = input.value.trim();
-            if (!plainText) return;
-
-            const sendBtn = document.getElementById('sendBtn');
-            sendBtn.disabled = true;
-
-            try {
-                const ciphertext = await encryptAES(plainText);
-
-                const payload = {
-                    ciphertext: ciphertext,
-                    senderName: currentUser.displayName || 'Anonymous',
-                    senderEmail: currentUser.email || '',
-                    senderPhoto: currentUser.photoURL || '',
-                    senderId: currentUser.uid,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    isDeleted: false
-                };
-
-                if (activeChatType === 'public') {
-                    await db.collection('artifacts').doc('ghostchat-f5452').collection('public').doc('data').collection('messages').add(payload);
-                } else {
-                    await db.collection('chats').doc(activeChatId).collection('messages').add(payload);
-                }
-
-                input.value = '';
-                showToast(t('toastSent'), 'success');
-            } catch (err) {
-                console.error("Send error:", err);
-                showToast("Failed to send: " + err.message, 'error');
-            } finally {
-                sendBtn.disabled = isUserBanned;
-            }
-        }
-
-        function initChatListener() {
-            const container = document.getElementById('messagesContainer');
-            if (unsubscribeMessages) unsubscribeMessages();
-
-            let query;
-            if (activeChatType === 'public') {
-                query = db.collection('artifacts').doc('ghostchat-f5452').collection('public').doc('data').collection('messages').orderBy('timestamp', 'asc');
-            } else {
-                query = db.collection('chats').doc(activeChatId).collection('messages').orderBy('timestamp', 'asc');
-            }
-
-            unsubscribeMessages = query.onSnapshot(async (snapshot) => {
-                if (snapshot.empty) {
-                    container.innerHTML = `<div class="text-center py-12 text-slate-500 font-mono text-xs">No messages here yet. Start talking!</div>`;
-                    return;
-                }
-
-                const isGlobalAdmin = currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
-                const msgPromises = snapshot.docs.map(async (doc) => {
-                    const msg = doc.data();
-                    let decryptedText = "";
-                    if (msg.isDeleted === true) {
-                        decryptedText = "🚫 Message deleted";
-                    } else {
-                        try {
-                            decryptedText = await decryptAES(msg.ciphertext);
-                        } catch (e) {
-                            decryptedText = "[Encrypted Message]";
-                        }
-                    }
-                    return { id: doc.id, ...msg, decryptedText };
-                });
-
-                const messages = await Promise.all(msgPromises);
-
+        function listenToAllUsers() {
+            if (unsubscribeUsersList) unsubscribeUsersList();
+            unsubscribeUsersList = db.collection('users').onSnapshot(snapshot => {
                 let html = '';
-                messages.forEach((msg) => {
-                    const timeStr = msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now';
-                    const isSender = currentUser && (msg.senderId === currentUser.uid || msg.senderEmail === currentUser.email);
-                    const canDelete = !msg.isDeleted && (isSender || isGlobalAdmin);
-
+                snapshot.forEach(doc => {
+                    const u = doc.data();
+                    const isBanned = u.isBanned === true;
+                    const isAdmin = u.email === ADMIN_EMAIL;
                     html += `
-                        <div class="flex flex-col items-start space-y-1">
-                            <div class="flex items-center gap-2 text-[11px] font-mono text-slate-400">
-                                <img src="${msg.photoURL || msg.senderPhoto || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-4 h-4 rounded-full">
-                                <span class="text-white font-semibold">${escapeHtml(msg.senderName)}</span>
-                                <span>${timeStr}</span>
-                                ${canDelete ? `
-                                    <button onclick="deleteChatMessage('${msg.id}')" title="Delete Message" class="text-slate-500 hover:text-rose-400 transition ml-1">
-                                        <i data-lucide="trash" class="w-3 h-3"></i>
-                                    </button>
-                                ` : ''}
+                        <div class="p-3 bg-black/40 border border-theme-border rounded-xl flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <img src="${u.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" class="w-8 h-8 rounded-full border border-theme-border">
+                                <div class="overflow-hidden font-mono">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-white truncate">${escapeHtml(u.displayName || u.username || 'Anon')}</span>
+                                        ${isAdmin ? `<span class="text-[9px] px-1 py-0.5 bg-rose-950 text-rose-400 border border-rose-800 rounded">ADMIN</span>` : ''}
+                                        ${isBanned ? `<span class="text-[9px] px-1 py-0.5 bg-rose-900 text-rose-300 rounded">BANNED</span>` : `<span class="text-[9px] px-1 py-0.5 bg-emerald-950 text-emerald-400 rounded">ACTIVE</span>`}
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 truncate">@${escapeHtml(u.username || 'no_handle')} · ${escapeHtml(u.email || '')}</p>
+                                </div>
                             </div>
-                            <div class="max-w-xl w-full bg-[#090D16] border border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-md">
-                                <div class="text-xs sm:text-sm font-sans ${msg.isDeleted ? 'text-slate-500 italic' : 'text-slate-100'} whitespace-pre-wrap leading-relaxed">${escapeHtml(msg.decryptedText)}</div>
-                            </div>
+                            ${!isAdmin ? `<button onclick="toggleUserBan('${u.uid}', ${!isBanned})" class="px-3 py-1.5 ${isBanned ? 'bg-emerald-600 text-slate-950' : 'bg-rose-600 text-white'} font-mono text-xs font-bold rounded-lg">${isBanned ? 'Unban' : 'Ban'}</button>` : ''}
                         </div>
                     `;
                 });
-
-                container.innerHTML = html;
-                container.scrollTop = container.scrollHeight;
-                lucide.createIcons();
-            }, (err) => {
-                console.error("Chat sync error:", err);
-                container.innerHTML = `<div class="text-center py-12 text-rose-400 font-mono text-xs">Error syncing chat: ${err.message}</div>`;
+                document.getElementById('adminUsersList').innerHTML = html;
             });
         }
 
-        function toggleAddFriendModal(show) { document.getElementById('addFriendModal').classList.toggle('hidden', !show); }
-        function openAddFriendModal() { toggleAddFriendModal(true); }
-
-        function toggleCreateGroupModal(show) { document.getElementById('createGroupModal').classList.toggle('hidden', !show); }
-        function openCreateGroupModal() { toggleCreateGroupModal(true); }
+        async function toggleUserBan(uid, banStatus) {
+            await db.collection('users').doc(uid).update({ isBanned: banStatus });
+        }
 
         function escapeHtml(text) {
             const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+            return (text || '').replace(/[&<>"']/g, m => map[m]);
         }
 
         let toastTimeout = null;
@@ -1113,27 +1617,21 @@
             toastMsg.textContent = message;
 
             if (type === 'success') {
-                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-emerald-500/50 bg-[#0c1f17] text-emerald-300 text-xs sm:text-sm font-mono backdrop-blur-lg transition-all duration-300";
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-emerald-500/50 bg-[#0c1f17] text-emerald-300 text-xs font-mono backdrop-blur-lg transition-all duration-300";
                 toastIcon.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>`;
             } else if (type === 'error') {
-                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-rose-500/50 bg-[#2b0e12] text-rose-300 text-xs sm:text-sm font-mono backdrop-blur-lg transition-all duration-300";
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-rose-500/50 bg-[#2b0e12] text-rose-300 text-xs font-mono backdrop-blur-lg transition-all duration-300";
                 toastIcon.innerHTML = `<i data-lucide="alert-octagon" class="w-4 h-4 text-rose-400"></i>`;
-            } else if (type === 'warning') {
-                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-amber-500/50 bg-[#281b0a] text-amber-300 text-xs sm:text-sm font-mono backdrop-blur-lg transition-all duration-300";
-                toastIcon.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>`;
             } else {
-                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-slate-700 bg-slate-900/90 text-slate-200 text-xs sm:text-sm font-mono backdrop-blur-lg transition-all duration-300";
-                toastIcon.innerHTML = `<i data-lucide="info" class="w-4 h-4 text-cyan-400"></i>`;
+                toast.className = "fixed bottom-6 right-6 z-50 transform translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-theme-border bg-theme-card/90 text-slate-200 text-xs font-mono backdrop-blur-lg transition-all duration-300";
+                toastIcon.innerHTML = `<i data-lucide="info" class="w-4 h-4 text-theme-accent"></i>`;
             }
 
             lucide.createIcons();
-            toastTimeout = setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3400);
+            toastTimeout = setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3400);
         }
 
         window.addEventListener('resize', updateResponsiveViews);
-
         window.addEventListener('DOMContentLoaded', () => {
             const langSelect = document.getElementById('langSelector');
             if (langSelect) langSelect.value = currentLang;
